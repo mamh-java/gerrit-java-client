@@ -1,7 +1,9 @@
 package com.mage.gerrit.client;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mage.gerrit.model.BaseModel;
 import com.mage.gerrit.utils.UrlUtils;
 
 import org.apache.commons.io.IOUtils;
@@ -40,6 +42,8 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 public class GerritHttpClient implements GerritHttpConnection {
     private final Logger LOGGER = LoggerFactory.getLogger(getClass());
@@ -159,7 +163,30 @@ public class GerritHttpClient implements GerritHttpConnection {
 
 
     @Override
-    public <T extends Object> T get(String path, Class<T> cls) throws IOException {
+    public <E extends BaseModel, C extends Collection> List<E>
+    get(String path, Class<E> cls, Class<C> cos) throws IOException {
+        HttpGet getMethod = new HttpGet(UrlUtils.toJsonApiUri(uri, context, path));
+        HttpResponse response = client.execute(getMethod, localContext);
+        try {
+            checkResponse(response);
+
+            return parseResponse(cls, cos, response);//解析响应体内容
+        } finally {
+            EntityUtils.consume(response.getEntity());
+            releaseConnection(getMethod);
+        }
+    }
+
+    private <E extends BaseModel, C extends Collection> List<E>
+    parseResponse(Class<E> cls, Class<C> cos, HttpResponse response) throws IOException {
+        byte[] bytes = getResponseBytes(response);
+        JavaType javaType = mapper.getTypeFactory().constructParametricType(cos, cls);
+        return mapper.readValue(bytes, javaType);
+    }
+
+
+    @Override
+    public <T extends BaseModel> T get(String path, Class<T> cls) throws IOException {
         HttpGet getMethod = new HttpGet(UrlUtils.toJsonApiUri(uri, context, path));
         HttpResponse response = client.execute(getMethod, localContext);
         try {
@@ -172,6 +199,36 @@ public class GerritHttpClient implements GerritHttpConnection {
         }
     }
 
+    private <T extends BaseModel> T parseResponse(Class<T> cls, HttpResponse response) throws IOException {
+        byte[] bytes = getResponseBytes(response);
+        return mapper.readValue(bytes, cls);
+    }
+
+    @Override
+    public String get(String path) throws IOException {
+        HttpGet getMethod = new HttpGet(UrlUtils.toJsonApiUri(uri, context, path));
+        HttpResponse response = client.execute(getMethod, localContext);
+        try {
+            checkResponse(response);
+            return parseResponse(response);//解析响应体内容,这个是获取字符串内容的。一般json体是一个单个值
+        } finally {
+            EntityUtils.consume(response.getEntity());
+            releaseConnection(getMethod);
+        }
+    }
+
+    private String parseResponse(HttpResponse response) throws IOException {
+        byte[] bytes = getResponseBytes(response);
+        return mapper.readValue(bytes, String.class);
+    }
+
+    //从response 中获取 一个字节数组，去除掉json开头的魔术字符串
+    private byte[] getResponseBytes(HttpResponse response) throws IOException {
+        InputStream content = response.getEntity().getContent();
+        byte[] bytes = IOUtils.toByteArray(content);
+        bytes = Arrays.copyOfRange(bytes, MAGIC_PREFIX.length(), bytes.length);
+        return bytes;
+    }
 
     private void checkResponse(HttpResponse response) throws HttpResponseException {
         int status = response.getStatusLine().getStatusCode();
@@ -186,14 +243,6 @@ public class GerritHttpClient implements GerritHttpConnection {
         }
     }
 
-
-    private <T extends Object> T parseResponse(Class<T> cls, HttpResponse response) throws IOException {
-        InputStream content = response.getEntity().getContent();
-        byte[] bytes = IOUtils.toByteArray(content);
-        LOGGER.debug(new String(bytes));
-        bytes = Arrays.copyOfRange(bytes, MAGIC_PREFIX.length(), bytes.length);
-        return mapper.readValue(bytes, cls);
-    }
 
     private ObjectMapper getDefaultMapper() {
         ObjectMapper mapper = new ObjectMapper();

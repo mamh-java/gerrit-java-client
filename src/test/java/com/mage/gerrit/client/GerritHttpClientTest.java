@@ -3,10 +3,12 @@ package com.mage.gerrit.client;
 import com.mage.gerrit.model.Account;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.net.URI;
+import java.util.List;
 
 public class GerritHttpClientTest {
 
@@ -33,29 +35,41 @@ public class GerritHttpClientTest {
         System.out.println(o);
     }
 
-    @Test
-    public void testGetAccounts() throws Exception {
-        Object o = client.get("a/accounts/?q=ma", Object.class);
-        System.out.println(o);
-    }
-
+    /**
+     * Method: get(String path, Class<T> cls)
+     */
     @Test
     public void testGetAccountDetail() throws Exception {
-        Object o = client.get("a/accounts/bright.ma/detail", Account.class);
+        Account o = client.get("a/accounts/bright.ma/detail", Account.class);
         System.out.println(o);
     }
 
+    /**
+     * Method: get(String path, Class<E> eCls, Class<C> cCls)
+     */
+    @Test
+    public void testGetAccounts() throws Exception {
+        List o = client.get("a/accounts/?q=ma", Account.class, List.class);
+        System.out.println(o);
+    }
 
+    /**
+     * Method: get(String path)
+     */
     @Test
     public void testGetAccountName() throws Exception {
-        String o = client.get("a/accounts/bright.ma/name", String.class);
+        String o = client.get("a/accounts/bright.ma/name");
         System.out.println(o);
+        Assert.assertEquals("Minghui Ma", o);
     }
 
-
+    /**
+     * Method: get(String path)
+     */
     @Test
     public void testGetAccountUserName() throws Exception {
-        String o = client.get("a/accounts/bright.ma/username", String.class);
+        String o = client.get("a/accounts/bright.ma/username");
         System.out.println(o);
+        Assert.assertEquals("bright.ma", o);
     }
 }

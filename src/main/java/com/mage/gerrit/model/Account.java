@@ -3,10 +3,9 @@ package com.mage.gerrit.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.io.Serializable;
 import java.util.Date;
 
-public class Account implements Serializable {
+public class Account extends BaseModel {
     //_account_id=1000000, name=Minghui Ma, email=bright.ma@blackshark.com, username=bright.ma
 
     @JsonProperty("_account_id")
