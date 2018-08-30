@@ -1,7 +1,13 @@
 package com.mage.gerrit.utils;
 
 
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 
 public final class UrlUtils {
@@ -19,6 +25,51 @@ public final class UrlUtils {
     }
 
 
+    /**
+     * 把数组所有元素排序，并按照“参数=参数值”的模式用“&”字符拼接成字符串
+     *
+     * @param params 需要排序并参与字符拼接的参数组
+     * @return 拼接后字符串
+     * @throws UnsupportedEncodingException
+     */
+    public static String joinParam(Map<String, String> params) throws UnsupportedEncodingException {
+        List<String> keys = new ArrayList<>(params.keySet());
+        Collections.sort(keys);
+        StringBuilder prestr = new StringBuilder("?");
+        for (int idx = 0, len = keys.size(); idx < len; idx++) {
+            String key = keys.get(idx);
+            String value = params.get(key);
+            //value = URLEncoder.encode(value, "UTF-8");
+            if (idx == len - 1) {//拼接时，不包括最后一个&字符
+                prestr.append(key).append("=").append(value);
+            } else {
+                prestr.append(key).append("=").append(value).append("&");
+            }
+        }
+
+        return prestr.toString();
+    }
+
+    /**
+     * 把list所有元素排序，并按照“参数=参数值”的模式用“&”字符拼接成字符串
+     *
+     * @param params 需要排序并参与字符拼接的参数组
+     * @return 拼接后字符串
+     * @throws UnsupportedEncodingException
+     */
+    public static String joinParam(String key, List<String> params) throws UnsupportedEncodingException {
+        StringBuilder prestr = new StringBuilder("?");
+        for (int idx = 0, len = params.size(); idx < len; idx++) {
+            String value = params.get(idx);
+            //value = URLEncoder.encode(value, "UTF-8");
+            if (idx == len - 1) {//拼接时，不包括最后一个&字符
+                prestr.append(key).append("=").append(value);
+            } else {
+                prestr.append(key).append("=").append(value).append("&");
+            }
+        }
+        return prestr.toString();
+    }
 
     /**
      * Join two paths together taking into account leading/trailing slashes.
