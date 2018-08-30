@@ -222,6 +222,24 @@ public class GerritHttpClient implements GerritHttpConnection {
         return mapper.readValue(bytes, String.class);
     }
 
+    @Override
+    public String get(String path, boolean raw) throws IOException {
+        HttpGet getMethod = new HttpGet(UrlUtils.toJsonApiUri(uri, context, path));
+        HttpResponse response = client.execute(getMethod, localContext);
+        try {
+            checkResponse(response);
+            if (raw) {
+                return new String(getResponseBytes(response));
+            } else {
+                return parseResponse(response);//解析响应体内容,这个是获取字符串内容的。一般json体是一个单个值
+            }
+        } finally {
+            EntityUtils.consume(response.getEntity());
+            releaseConnection(getMethod);
+        }
+    }
+
+
     //从response 中获取 一个字节数组，去除掉json开头的魔术字符串
     private byte[] getResponseBytes(HttpResponse response) throws IOException {
         InputStream content = response.getEntity().getContent();

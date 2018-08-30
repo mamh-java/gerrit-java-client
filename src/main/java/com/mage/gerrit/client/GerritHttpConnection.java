@@ -37,4 +37,6 @@ public interface GerritHttpConnection extends Closeable {
      * @throws IOException
      */
     String get(String path) throws IOException;
+
+    String get(String path, boolean raw) throws IOException;
 }

@@ -60,7 +60,7 @@ public class Account extends BaseModel {
 
     @Override
     public String toString() {
-        return "Account{" +
+        return "\nAccount{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
