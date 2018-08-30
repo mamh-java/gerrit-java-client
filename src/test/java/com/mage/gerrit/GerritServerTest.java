@@ -2,6 +2,7 @@ package com.mage.gerrit;
 
 import com.mage.gerrit.client.GerritHttpClient;
 import com.mage.gerrit.model.AccountInfo;
+import com.mage.gerrit.model.DocResult;
 import com.mage.gerrit.model.ProjectAccessInfo;
 
 import org.junit.After;
@@ -10,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Map;
 
 
@@ -65,4 +67,9 @@ public class GerritServerTest {
 
     }
 
+    @Test
+    public void searchDocumentation() {
+        List<DocResult> l = server.searchDocumentation("test");
+        System.out.println(l);
+    }
 }

@@ -2,11 +2,13 @@ package com.mage.gerrit;
 
 import com.mage.gerrit.client.GerritHttpClient;
 import com.mage.gerrit.model.AccountInfo;
+import com.mage.gerrit.model.DocResult;
 import com.mage.gerrit.model.ProjectAccessInfo;
 import com.mage.gerrit.utils.UrlUtils;
 
 import org.apache.commons.lang3.StringUtils;
 
+import javax.xml.ws.Endpoint;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -71,5 +73,17 @@ public class GerritServer {
 
     }
 
+
+    public List<DocResult> searchDocumentation(String pattern) {
+
+        String endpoint = "/Documentation/";
+        endpoint = join(endpoint, "?q=" + pattern);
+        try {
+            return client.get(endpoint, DocResult.class, List.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
 }
