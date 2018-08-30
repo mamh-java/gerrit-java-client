@@ -44,6 +44,7 @@ import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 public class GerritHttpClient implements GerritHttpConnection {
     private final Logger LOGGER = LoggerFactory.getLogger(getClass());
@@ -163,8 +164,7 @@ public class GerritHttpClient implements GerritHttpConnection {
 
 
     @Override
-    public <E extends BaseModel, C extends Collection> List<E>
-    get(String path, Class<E> cls, Class<C> cos) throws IOException {
+    public <E extends BaseModel, C extends Collection> List<E> get(String path, Class<E> cls, Class<C> cos) throws IOException {
         HttpGet getMethod = new HttpGet(UrlUtils.toJsonApiUri(uri, context, path));
         HttpResponse response = client.execute(getMethod, localContext);
         try {
@@ -177,8 +177,22 @@ public class GerritHttpClient implements GerritHttpConnection {
         }
     }
 
-    private <E extends BaseModel, C extends Collection> List<E>
-    parseResponse(Class<E> cls, Class<C> cos, HttpResponse response) throws IOException {
+    public <E extends BaseModel, K, M extends Map<K, E>> Map<K, E> getMap(String path, Class<E> cls, Class<M> cos, Class<K> kls) throws IOException {
+        HttpGet getMethod = new HttpGet(UrlUtils.toJsonApiUri(uri, context, path));
+        HttpResponse response = client.execute(getMethod, localContext);
+        try {
+            checkResponse(response);
+
+            byte[] bytes = getResponseBytes(response);
+            JavaType javaType = mapper.getTypeFactory().constructParametricType(cos, kls, cls);
+            return mapper.readValue(bytes, javaType);
+        } finally {
+            EntityUtils.consume(response.getEntity());
+            releaseConnection(getMethod);
+        }
+    }
+
+    private <E extends BaseModel, C extends Collection> List<E> parseResponse(Class<E> cls, Class<C> cos, HttpResponse response) throws IOException {
         byte[] bytes = getResponseBytes(response);
         JavaType javaType = mapper.getTypeFactory().constructParametricType(cos, cls);
         return mapper.readValue(bytes, javaType);
