@@ -1,6 +1,6 @@
 package com.mage.gerrit.client;
 
-import com.mage.gerrit.model.Account;
+import com.mage.gerrit.model.AccountInfo;
 
 import org.junit.After;
 import org.junit.Before;
@@ -29,7 +29,7 @@ public class GerritHttpClientTest {
      */
     @Test
     public void testGet() throws Exception {
-        Account o = client.get("a/accounts/bright.ma", Account.class);
+        AccountInfo o = client.get("a/accounts/bright.ma", AccountInfo.class);
         System.out.println(o);
     }
 
@@ -39,7 +39,7 @@ public class GerritHttpClientTest {
      */
     @Test
     public void testGet1() throws Exception {
-        List o = client.get("a/accounts/?q=b", Account.class, List.class);
+        List o = client.get("a/accounts/?q=b", AccountInfo.class, List.class);
         System.out.println(o);
     }
 

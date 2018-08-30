@@ -1,7 +1,7 @@
 package com.mage.gerrit;
 
 import com.mage.gerrit.client.GerritHttpClient;
-import com.mage.gerrit.model.Account;
+import com.mage.gerrit.model.AccountInfo;
 import com.mage.gerrit.model.ProjectAccessInfo;
 
 import org.junit.After;
@@ -34,7 +34,7 @@ public class GerritServerTest {
      */
     @Test
     public void testGetAccount() {
-        Account account = server.getAccount("bright.ma");
+        AccountInfo account = server.getAccount("bright.ma");
         Assert.assertEquals(1000000, account.getId());
         System.out.println(account);
     }
@@ -44,7 +44,7 @@ public class GerritServerTest {
      */
     @Test
     public void testGetAccountDetail() {
-        Account account = server.getAccount("bright.ma", true);
+        AccountInfo account = server.getAccount("bright.ma", true);
         Assert.assertEquals(1000000, account.getId());
         Assert.assertNotNull(account.getRegOn());
         System.out.println(account);
@@ -58,9 +58,10 @@ public class GerritServerTest {
         String project1 = "git/shared/test";
         String project2 = "git/shared/tools/aais-java";
         Map<String, ProjectAccessInfo> info = server.listAccess(project1);
-        //ProjectAccessInfo inf1 = server.listAccess(project1, project2, project1);
+        Map<String, ProjectAccessInfo> info1 = server.listAccess(project1, project2, project1);
 
         System.out.println(info);
+        System.out.println(info1);
 
     }
 

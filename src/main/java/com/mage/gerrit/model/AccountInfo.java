@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Date;
 
-public class Account extends BaseModel {
+public class AccountInfo extends BaseModel {
     //_account_id=1000000, name=Minghui Ma, email=bright.ma@blackshark.com, username=bright.ma
 
     @JsonProperty("_account_id")
@@ -60,7 +60,7 @@ public class Account extends BaseModel {
 
     @Override
     public String toString() {
-        return "\nAccount{" +
+        return "\nAccountInfo{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +

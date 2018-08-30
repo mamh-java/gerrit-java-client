@@ -1,7 +1,7 @@
 package com.mage.gerrit;
 
 import com.mage.gerrit.client.GerritHttpClient;
-import com.mage.gerrit.model.Account;
+import com.mage.gerrit.model.AccountInfo;
 import com.mage.gerrit.model.ProjectAccessInfo;
 import com.mage.gerrit.utils.UrlUtils;
 
@@ -36,11 +36,11 @@ public class GerritServer {
         this.client = client;
     }
 
-    public Account getAccount(String username) {
+    public AccountInfo getAccount(String username) {
         return getAccount(username, false);
     }
 
-    public Account getAccount(String username, boolean withDetail) {
+    public AccountInfo getAccount(String username, boolean withDetail) {
         if (StringUtils.isEmpty(username)) {
             return null;
         }
@@ -49,7 +49,7 @@ public class GerritServer {
             endpoint = join(endpoint, "detail");
         }
         try {
-            return client.get(endpoint, Account.class);
+            return client.get(endpoint, AccountInfo.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
