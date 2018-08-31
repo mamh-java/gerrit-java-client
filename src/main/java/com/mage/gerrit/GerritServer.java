@@ -8,7 +8,6 @@ import com.mage.gerrit.utils.UrlUtils;
 
 import org.apache.commons.lang3.StringUtils;
 
-import javax.xml.ws.Endpoint;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -64,7 +63,6 @@ public class GerritServer {
         try {
             String s = UrlUtils.joinParam("project", list);
             String endpoint = join("a/access/", s);
-            System.out.println(client.get(endpoint, true));
             return client.get(endpoint, ProjectAccessInfo.class, HashMap.class, String.class);
         } catch (IOException e) {
             e.printStackTrace();

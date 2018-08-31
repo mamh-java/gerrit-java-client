@@ -65,13 +65,29 @@ public class GerritServerTest {
     @Test
     public void testListAccess() throws Exception {
         String project1 = "git/shared/test";
-        String project2 = "git/shared/tools/aais-java";
         Map<String, ProjectAccessInfo> info = server.listAccess(project1);
-        Map<String, ProjectAccessInfo> info1 = server.listAccess(project1, project2, project1);
-
         pprint(info);
-        pprint(info1);
+    }
 
+    /**
+     * Method: listAccess(String project)
+     */
+    @Test
+    public void testListAccess1() throws Exception {
+        String project1 = "All-Projects";
+        Map<String, ProjectAccessInfo> info = server.listAccess(project1);
+        pprint(info);
+    }
+
+    /**
+     * Method: listAccess(String project)
+     */
+    @Test
+    public void testListAccess2() throws Exception {
+        String project1 = "git/shared/test";
+        String project2 = "git/shared/hibernate";
+        Map<String, ProjectAccessInfo> info = server.listAccess(project1, project2);
+        pprint(info);
     }
 
     @Test
