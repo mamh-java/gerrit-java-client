@@ -1,30 +1,66 @@
 package com.mage.gerrit.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.Date;
+import java.util.List;
 
 public class AccountInfo extends BaseModel {
     //_account_id=1000000, name=Minghui Ma, email=bright.ma@blackshark.com, username=bright.ma
 
+    /**
+     * The numeric ID of the account.
+     */
     @JsonProperty("_account_id")
     private int id;
+
+    /**
+     * optional
+     * <p>
+     * The full name of the user.
+     * Only set if detailed account information is requested.
+     * See option DETAILED_ACCOUNTS for change queries
+     * and option DETAILS for account queries.
+     */
     private String name;
+
+    /**
+     * optional
+     * <p>
+     * The email address the user prefers to be contacted through.
+     * Only set if detailed account information is requested.
+     * See option DETAILED_ACCOUNTS for change queries
+     * and options DETAILS and ALL_EMAILS for account queries.
+     */
     private String email;
+
+    /**
+     * optional
+     * <p>
+     * A list of the secondary email addresses of the user.
+     * Only set for account queries when the ALL_EMAILS option is set.
+     */
+    @JsonProperty("secondary_emails")
+    private List<String> secondaryEmails;
+
+    /**
+     * optional
+     * <p>
+     * The username of the user.
+     * Only set if detailed account information is requested.
+     * See option DETAILED_ACCOUNTS for change queries
+     * and option DETAILS for account queries.
+     */
     private String username;
 
-    @JsonProperty("registered_on")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date regOn;
 
-    public Date getRegOn() {
-        return regOn;
-    }
+    /**
+     * optional, not set if false
+     * Whether the query would deliver more results if not limited.
+     * Only set on the last account that is returned.
+     */
+    @JsonProperty("_more_accounts")
+    private boolean moreAccounts;
 
-    public void setRegOn(Date regOn) {
-        this.regOn = regOn;
-    }
 
     public int getId() {
         return id;
@@ -58,14 +94,5 @@ public class AccountInfo extends BaseModel {
         this.username = username;
     }
 
-    @Override
-    public String toString() {
-        return "\nAccountInfo{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", email='" + email + '\'' +
-                ", username='" + username + '\'' +
-                ", regOn='" + regOn + '\'' +
-                '}';
-    }
+
 }
