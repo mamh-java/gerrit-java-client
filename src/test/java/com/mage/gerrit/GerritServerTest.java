@@ -55,7 +55,7 @@ public class GerritServerTest {
     public void testGetAccountDetail() {
         AccountInfo account = server.getAccount("bright.ma", true);
         Assert.assertEquals(1000000, account.getId());
-        Assert.assertNotNull(account.getRegOn());
+
         pprint(account);
     }
 

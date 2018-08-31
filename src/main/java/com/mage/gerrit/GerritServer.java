@@ -1,6 +1,7 @@
 package com.mage.gerrit;
 
 import com.mage.gerrit.client.GerritHttpClient;
+import com.mage.gerrit.model.AccountDetailInfo;
 import com.mage.gerrit.model.AccountInfo;
 import com.mage.gerrit.model.DocResult;
 import com.mage.gerrit.model.ProjectAccessInfo;
@@ -45,12 +46,14 @@ public class GerritServer {
         if (StringUtils.isEmpty(username)) {
             return null;
         }
-        String endpoint = join("a/accounts/", username);
-        if (withDetail) {
-            endpoint = join(endpoint, "detail");
-        }
         try {
-            return client.get(endpoint, AccountInfo.class);
+            String endpoint = join("a/accounts/", username);
+            if (withDetail) {
+                endpoint = join(endpoint, "detail");
+                return client.get(endpoint, AccountDetailInfo.class);
+            } else {
+                return client.get(endpoint, AccountInfo.class);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
