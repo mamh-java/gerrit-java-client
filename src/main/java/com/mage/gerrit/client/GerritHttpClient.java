@@ -1,6 +1,7 @@
 package com.mage.gerrit.client;
 
 import com.fasterxml.jackson.databind.JavaType;
+import com.mage.gerrit.api.GerritHttpConnection;
 import com.mage.gerrit.model.BaseModel;
 
 import org.apache.commons.lang3.StringUtils;

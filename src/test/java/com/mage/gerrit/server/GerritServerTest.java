@@ -1,14 +1,13 @@
-package com.mage.gerrit;
+package com.mage.gerrit.server;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mage.gerrit.client.GerritHttpClient;
-import com.mage.gerrit.model.AccountInfo;
 import com.mage.gerrit.model.DocResult;
 import com.mage.gerrit.model.ProjectAccessInfo;
+import com.mage.gerrit.server.GerritServer;
 
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -38,26 +37,7 @@ public class GerritServerTest {
     public void after() throws Exception {
     }
 
-    /**
-     * Method: getAccount(String username)
-     */
-    @Test
-    public void testGetAccount() {
-        AccountInfo account = server.getAccount("bright.ma");
-        Assert.assertEquals(1000000, account.getId());
-        pprint(account);
-    }
 
-    /**
-     * Method: getAccount(String username, boolean withDetail)
-     */
-    @Test
-    public void testGetAccountDetail() {
-        AccountInfo account = server.getAccount("bright.ma", true);
-        Assert.assertEquals(1000000, account.getId());
-
-        pprint(account);
-    }
 
     /**
      * Method: listAccess(String project)

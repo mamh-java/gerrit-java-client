@@ -1,4 +1,4 @@
-package com.mage.gerrit.client;
+package com.mage.gerrit.api;
 
 import com.mage.gerrit.model.BaseModel;
 

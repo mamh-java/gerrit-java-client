@@ -1,13 +1,10 @@
-package com.mage.gerrit;
+package com.mage.gerrit.server;
 
 import com.mage.gerrit.client.GerritHttpClient;
-import com.mage.gerrit.model.AccountDetailInfo;
-import com.mage.gerrit.model.AccountInfo;
+import com.mage.gerrit.client.AccountClient;
 import com.mage.gerrit.model.DocResult;
 import com.mage.gerrit.model.ProjectAccessInfo;
 import com.mage.gerrit.utils.UrlUtils;
-
-import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.net.URI;
@@ -20,7 +17,8 @@ import java.util.Map;
 import static com.mage.gerrit.utils.UrlUtils.join;
 
 public class GerritServer {
-    private final GerritHttpClient client;
+    private GerritHttpClient client;
+    private AccountClient account;
 
     public GerritServer(URI serverUri) {
         this(new GerritHttpClient(serverUri));
@@ -34,30 +32,25 @@ public class GerritServer {
         this(new GerritHttpClient(serverUri, username, passwordOrToken));
     }
 
-    public GerritServer(final GerritHttpClient client) {
+    public GerritServer(GerritHttpClient client) {
+        this.client = client;
+        this.account = new AccountClient(client);
+    }
+
+    public GerritHttpClient getClient() {
+        return client;
+    }
+
+    public void setClient(GerritHttpClient client) {
         this.client = client;
     }
 
-    public AccountInfo getAccount(String username) {
-        return getAccount(username, false);
+    public AccountClient getAccount() {
+        return account;
     }
 
-    public AccountInfo getAccount(String username, boolean withDetail) {
-        if (StringUtils.isEmpty(username)) {
-            return null;
-        }
-        try {
-            String endpoint = join("a/accounts/", username);
-            if (withDetail) {
-                endpoint = join(endpoint, "detail");
-                return client.get(endpoint, AccountDetailInfo.class);
-            } else {
-                return client.get(endpoint, AccountInfo.class);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+    public void setAccount(AccountClient account) {
+        this.account = account;
     }
 
     public Map<String, ProjectAccessInfo> listAccess(String... project) {

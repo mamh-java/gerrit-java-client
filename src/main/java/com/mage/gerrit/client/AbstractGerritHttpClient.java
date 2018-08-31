@@ -2,6 +2,7 @@ package com.mage.gerrit.client;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mage.gerrit.api.GerritHttpConnection;
 import com.mage.gerrit.utils.UrlUtils;
 
 import org.apache.commons.io.IOUtils;
@@ -42,7 +43,8 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.Arrays;
 
-public abstract class AbstractGerritHttpClient implements GerritHttpConnection {
+public abstract class AbstractGerritHttpClient implements
+        GerritHttpConnection {
     protected final Logger LOGGER = LoggerFactory.getLogger(getClass());
     protected static final String MAGIC_PREFIX = ")]}'\n";
     protected static final String JSON_MIME_TYPE = ContentType.APPLICATION_JSON.getMimeType();
