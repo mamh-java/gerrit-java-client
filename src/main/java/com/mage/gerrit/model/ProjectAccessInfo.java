@@ -1,18 +1,21 @@
 package com.mage.gerrit.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
+import java.util.Map;
 
 public class ProjectAccessInfo extends BaseModel {
+    //The revision of the refs/meta/config branch from which the access rights were loaded.
     private String revision;
 
+    //The parent project from which permissions are inherited as a ProjectInfo entity.
     @JsonProperty("inherits_from")
     private ProjectInfo inheritsFrom;
 
-    @JsonIgnore
-    private String local;
+
+    //The local access rights of the project as a map that maps the refs to AccessSectionInfo entities.
+    private Map<String, AccessSectionInfo> local;
 
     @JsonProperty("is_owner")
     private boolean isOwner;
@@ -28,6 +31,8 @@ public class ProjectAccessInfo extends BaseModel {
 
     @JsonProperty("config_visible")
     private boolean configVisible;
+
+    private Map<String, GroupInfo> groups;
 
     public String getRevision() {
         return revision;
@@ -45,11 +50,11 @@ public class ProjectAccessInfo extends BaseModel {
         this.inheritsFrom = inheritsFrom;
     }
 
-    public String getLocal() {
+    public Map<String, AccessSectionInfo> getLocal() {
         return local;
     }
 
-    public void setLocal(String local) {
+    public void setLocal(Map<String, AccessSectionInfo> local) {
         this.local = local;
     }
 
@@ -93,17 +98,13 @@ public class ProjectAccessInfo extends BaseModel {
         this.configVisible = configVisible;
     }
 
-    @Override
-    public String toString() {
-        return "\nProjectAccessInfo{" +
-                "revision='" + revision + '\'' +
-                ", inheritsFrom=" + inheritsFrom +
-                ", local='" + local + '\'' +
-                ", isOwner=" + isOwner +
-                ", ownerOf=" + ownerOf +
-                ", canUpload=" + canUpload +
-                ", canAdd=" + canAdd +
-                ", configVisible=" + configVisible +
-                '}';
+    public Map<String, GroupInfo> getGroups() {
+        return groups;
     }
+
+    public void setGroups(Map<String, GroupInfo> groups) {
+        this.groups = groups;
+    }
+
+
 }
