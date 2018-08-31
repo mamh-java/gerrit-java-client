@@ -1,9 +1,10 @@
 package com.mage.gerrit.utils;
 
 
-import java.io.UnsupportedEncodingException;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import java.net.URI;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -30,16 +31,24 @@ public final class UrlUtils {
      *
      * @param params 需要排序并参与字符拼接的参数组
      * @return 拼接后字符串
-     * @throws UnsupportedEncodingException
      */
-    public static String joinParam(Map<String, String> params) throws UnsupportedEncodingException {
+    public static String joinParam(Map<String, String> params) {
+        return joinParam(null, params);
+    }
+
+    public static String joinParam(String first, Map<String, String> params) {
         List<String> keys = new ArrayList<>(params.keySet());
         Collections.sort(keys);
         StringBuilder prestr = new StringBuilder("?");
+        if (StringUtils.isNotEmpty(first)) {
+            prestr.append(first);
+        }
+        if (params.size() > 0) {
+            prestr.append("&");
+        }
         for (int idx = 0, len = keys.size(); idx < len; idx++) {
             String key = keys.get(idx);
             String value = params.get(key);
-            //value = URLEncoder.encode(value, "UTF-8");
             if (idx == len - 1) {//拼接时，不包括最后一个&字符
                 prestr.append(key).append("=").append(value);
             } else {
@@ -53,15 +62,23 @@ public final class UrlUtils {
     /**
      * 把list所有元素排序，并按照“参数=参数值”的模式用“&”字符拼接成字符串
      *
-     * @param params 需要排序并参与字符拼接的参数组
+     * @param list 需要排序并参与字符拼接的参数组
      * @return 拼接后字符串
-     * @throws UnsupportedEncodingException
      */
-    public static String joinParam(String key, List<String> params) throws UnsupportedEncodingException {
+    public static String joinParam(String key, List<String> list) {
+        return joinParam(null, key, list);
+    }
+
+    public static String joinParam(String first, String key, List<String> list) {
         StringBuilder prestr = new StringBuilder("?");
-        for (int idx = 0, len = params.size(); idx < len; idx++) {
-            String value = params.get(idx);
-            //value = URLEncoder.encode(value, "UTF-8");
+        if (StringUtils.isNotEmpty(first)) {
+            prestr.append(first);
+        }
+        if (CollectionUtils.isNotEmpty(list)) {
+            prestr.append("&");
+        }
+        for (int idx = 0, len = list.size(); idx < len; idx++) {
+            String value = list.get(idx);
             if (idx == len - 1) {//拼接时，不包括最后一个&字符
                 prestr.append(key).append("=").append(value);
             } else {
