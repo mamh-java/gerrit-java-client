@@ -164,27 +164,30 @@ public class GerritHttpClient implements GerritHttpConnection {
 
 
     @Override
-    public <E extends BaseModel, C extends Collection> List<E> get(String path, Class<E> cls, Class<C> cos) throws IOException {
+    public <E extends BaseModel, C extends List>
+    List<E> get(String path, Class<E> elementCls, Class<C> listCls) throws IOException {
         HttpGet getMethod = new HttpGet(UrlUtils.toJsonApiUri(uri, context, path));
         HttpResponse response = client.execute(getMethod, localContext);
         try {
             checkResponse(response);
 
-            return parseResponse(cls, cos, response);//解析响应体内容
+            return parseResponse(response, elementCls, listCls);//解析响应体内容
         } finally {
             EntityUtils.consume(response.getEntity());
             releaseConnection(getMethod);
         }
     }
 
-    public <E extends BaseModel, K, M extends Map<K, E>> Map<K, E> getMap(String path, Class<E> cls, Class<M> cos, Class<K> kls) throws IOException {
+    @Override
+    public <E extends BaseModel, K, M extends Map<K, E>>
+    Map<K, E> get(String path, Class<E> elementCls, Class<M> mapCls, Class<K> keyCls) throws IOException {
         HttpGet getMethod = new HttpGet(UrlUtils.toJsonApiUri(uri, context, path));
         HttpResponse response = client.execute(getMethod, localContext);
         try {
             checkResponse(response);
 
             byte[] bytes = getResponseBytes(response);
-            JavaType javaType = mapper.getTypeFactory().constructParametricType(cos, kls, cls);
+            JavaType javaType = mapper.getTypeFactory().constructParametricType(mapCls, keyCls, elementCls);
             return mapper.readValue(bytes, javaType);
         } finally {
             EntityUtils.consume(response.getEntity());
@@ -192,7 +195,8 @@ public class GerritHttpClient implements GerritHttpConnection {
         }
     }
 
-    private <E extends BaseModel, C extends Collection> List<E> parseResponse(Class<E> cls, Class<C> cos, HttpResponse response) throws IOException {
+    private <E extends BaseModel, C extends Collection>
+    List<E> parseResponse(HttpResponse response, Class<E> cls, Class<C> cos) throws IOException {
         byte[] bytes = getResponseBytes(response);
         JavaType javaType = mapper.getTypeFactory().constructParametricType(cos, cls);
         return mapper.readValue(bytes, javaType);
@@ -206,14 +210,14 @@ public class GerritHttpClient implements GerritHttpConnection {
         try {
             checkResponse(response);
 
-            return parseResponse(cls, response);//解析响应体内容
+            return parseResponse(response, cls);//解析响应体内容
         } finally {
             EntityUtils.consume(response.getEntity());
             releaseConnection(getMethod);
         }
     }
 
-    private <T extends BaseModel> T parseResponse(Class<T> cls, HttpResponse response) throws IOException {
+    private <T extends BaseModel> T parseResponse(HttpResponse response, Class<T> cls) throws IOException {
         byte[] bytes = getResponseBytes(response);
         return mapper.readValue(bytes, cls);
     }

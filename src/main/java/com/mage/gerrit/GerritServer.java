@@ -65,7 +65,7 @@ public class GerritServer {
             String s = UrlUtils.joinParam("project", list);
             String endpoint = join("a/access/", s);
             System.out.println(client.get(endpoint, true));
-            return client.getMap(endpoint, ProjectAccessInfo.class, HashMap.class, String.class);
+            return client.get(endpoint, ProjectAccessInfo.class, HashMap.class, String.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
