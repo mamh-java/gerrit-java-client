@@ -42,7 +42,6 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -163,6 +162,17 @@ public class GerritHttpClient implements GerritHttpConnection {
     }
 
 
+    /**
+     * 获取一个list
+     *
+     * @param path       Endpoints,也就是url地址
+     * @param elementCls list中元素类型的
+     * @param listCls    返回的list的类型，一般可以是ArrayList
+     * @param <E>
+     * @param <C>
+     * @return
+     * @throws IOException
+     */
     @Override
     public <E extends BaseModel, C extends List>
     List<E> get(String path, Class<E> elementCls, Class<C> listCls) throws IOException {
@@ -170,14 +180,28 @@ public class GerritHttpClient implements GerritHttpConnection {
         HttpResponse response = client.execute(getMethod, localContext);
         try {
             checkResponse(response);
-
-            return parseResponse(response, elementCls, listCls);//解析响应体内容
+            byte[] bytes = getResponseBytes(response);
+            JavaType javaType = mapper.getTypeFactory().constructParametricType(listCls, elementCls);
+            return mapper.readValue(bytes, javaType);
         } finally {
             EntityUtils.consume(response.getEntity());
             releaseConnection(getMethod);
         }
     }
 
+    /**
+     * 获取为一个map对象
+     *
+     * @param path
+     * @param elementCls
+     * @param mapCls
+     * @param keyCls
+     * @param <E>
+     * @param <K>
+     * @param <M>
+     * @return
+     * @throws IOException
+     */
     @Override
     public <E extends BaseModel, K, M extends Map<K, E>>
     Map<K, E> get(String path, Class<E> elementCls, Class<M> mapCls, Class<K> keyCls) throws IOException {
@@ -185,7 +209,6 @@ public class GerritHttpClient implements GerritHttpConnection {
         HttpResponse response = client.execute(getMethod, localContext);
         try {
             checkResponse(response);
-
             byte[] bytes = getResponseBytes(response);
             JavaType javaType = mapper.getTypeFactory().constructParametricType(mapCls, keyCls, elementCls);
             return mapper.readValue(bytes, javaType);
@@ -195,31 +218,29 @@ public class GerritHttpClient implements GerritHttpConnection {
         }
     }
 
-    private <E extends BaseModel, C extends Collection>
-    List<E> parseResponse(HttpResponse response, Class<E> cls, Class<C> cos) throws IOException {
-        byte[] bytes = getResponseBytes(response);
-        JavaType javaType = mapper.getTypeFactory().constructParametricType(cos, cls);
-        return mapper.readValue(bytes, javaType);
-    }
 
-
+    /**
+     * 获取为一个单个的对象
+     *
+     * @param path Endpoints,也就是url地址
+     * @param cls
+     * @param <E>
+     * @return
+     * @throws IOException
+     */
     @Override
-    public <T extends BaseModel> T get(String path, Class<T> cls) throws IOException {
+    public <E extends BaseModel>
+    E get(String path, Class<E> cls) throws IOException {
         HttpGet getMethod = new HttpGet(UrlUtils.toJsonApiUri(uri, context, path));
         HttpResponse response = client.execute(getMethod, localContext);
         try {
             checkResponse(response);
-
-            return parseResponse(response, cls);//解析响应体内容
+            byte[] bytes = getResponseBytes(response);
+            return mapper.readValue(bytes, cls);
         } finally {
             EntityUtils.consume(response.getEntity());
             releaseConnection(getMethod);
         }
-    }
-
-    private <T extends BaseModel> T parseResponse(HttpResponse response, Class<T> cls) throws IOException {
-        byte[] bytes = getResponseBytes(response);
-        return mapper.readValue(bytes, cls);
     }
 
     @Override
@@ -228,16 +249,12 @@ public class GerritHttpClient implements GerritHttpConnection {
         HttpResponse response = client.execute(getMethod, localContext);
         try {
             checkResponse(response);
-            return parseResponse(response);//解析响应体内容,这个是获取字符串内容的。一般json体是一个单个值
+            byte[] bytes = getResponseBytes(response);
+            return mapper.readValue(bytes, String.class);
         } finally {
             EntityUtils.consume(response.getEntity());
             releaseConnection(getMethod);
         }
-    }
-
-    private String parseResponse(HttpResponse response) throws IOException {
-        byte[] bytes = getResponseBytes(response);
-        return mapper.readValue(bytes, String.class);
     }
 
     @Override
@@ -246,10 +263,11 @@ public class GerritHttpClient implements GerritHttpConnection {
         HttpResponse response = client.execute(getMethod, localContext);
         try {
             checkResponse(response);
+            byte[] bytes = getResponseBytes(response);
             if (raw) {
-                return new String(getResponseBytes(response));
+                return new String(bytes);
             } else {
-                return parseResponse(response);//解析响应体内容,这个是获取字符串内容的。一般json体是一个单个值
+                return mapper.readValue(bytes, String.class);//解析响应体内容,这个是获取字符串内容的。一般json体是一个单个值
             }
         } finally {
             EntityUtils.consume(response.getEntity());
