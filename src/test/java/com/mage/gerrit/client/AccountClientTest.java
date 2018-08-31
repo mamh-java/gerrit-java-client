@@ -2,14 +2,15 @@ package com.mage.gerrit.client;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.mage.gerrit.server.GerritServer;
 import com.mage.gerrit.model.AccountInfo;
+import com.mage.gerrit.server.GerritServer;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.net.URI;
+import java.util.List;
 
 public class AccountClientTest {
     private GerritHttpClient client;
@@ -29,13 +30,20 @@ public class AccountClientTest {
 
     @Test
     public void testGet() {
-        AccountInfo account = server.getAccount().get("bright.ma");
+        AccountInfo account = server.getAccount().get();
         Assert.assertEquals(1000000, account.getId());
         pprint(account);
     }
 
     @Test
     public void testGet1() {
+        AccountInfo account = server.getAccount().get("bright.ma");
+        Assert.assertEquals(1000000, account.getId());
+        pprint(account);
+    }
+
+    @Test
+    public void testGet2() {
         AccountInfo account = server.getAccount().get("bright.ma", true);
         Assert.assertEquals(1000000, account.getId());
 
@@ -48,5 +56,19 @@ public class AccountClientTest {
         Assert.assertEquals(1000000, account.getId());
 
         pprint(account);
+    }
+
+
+    @Test
+    public void testQuery() {
+        List<AccountInfo> accountInfos = server.getAccount().query("name:bright", "2");
+        pprint(accountInfos);
+    }
+
+
+    @Test
+    public void testQuery1() {
+        List<AccountInfo> accountInfos = server.getAccount().query("ma");
+        pprint(accountInfos);
     }
 }
