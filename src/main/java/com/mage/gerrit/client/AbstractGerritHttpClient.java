@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpException;
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpRequestInterceptor;
@@ -27,14 +28,14 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.client.protocol.ClientContext;
+import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.protocol.ExecutionContext;
 import org.apache.http.protocol.HttpContext;
+import org.apache.http.protocol.HttpCoreContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -167,27 +168,39 @@ public abstract class AbstractGerritHttpClient implements
     protected static HttpClientBuilder addAuth(final HttpClientBuilder builder, final URI uri, final String username, String password) {
         if (StringUtils.isNotBlank(username)) {
             CredentialsProvider provider = new BasicCredentialsProvider();
-            AuthScope scope = new AuthScope(uri.getHost(), uri.getPort(), "realm");
+            AuthScope scope = new AuthScope(uri.getHost(), uri.getPort());//, "realm"
             UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password);
             provider.setCredentials(scope, credentials);
             builder.setDefaultCredentialsProvider(provider);
 
-            builder.addInterceptorFirst(new PreemptiveAuth());
+            builder.addInterceptorFirst(new PreemptiveAuth());//1.1抢先认证(Preemptive Authentication)
+
+            builder.addInterceptorLast(new UserAgentHttpRequestInterceptor());
         }
         return builder;
     }
 
+    static class UserAgentHttpRequestInterceptor implements HttpRequestInterceptor {
+
+        @Override
+        public void process(final HttpRequest request, final HttpContext context) {
+            Header existingUserAgent = request.getFirstHeader(HttpHeaders.USER_AGENT);
+            String userAgent = String.format("gerrit-java-client/%s using %s", "1.0", existingUserAgent.getValue());
+            request.setHeader(HttpHeaders.USER_AGENT, userAgent);
+        }
+    }
+
     protected static class PreemptiveAuth implements HttpRequestInterceptor {
+        static final String PREEMPTIVE_AUTH = "preemptive-auth";
 
         @Override
         public void process(HttpRequest request, HttpContext context) throws HttpException, IOException {
-            AuthState authState = (AuthState) context.getAttribute(ClientContext.TARGET_AUTH_STATE);
+            AuthState authState = (AuthState) context.getAttribute(HttpClientContext.TARGET_AUTH_STATE);
 
             if (authState.getAuthScheme() == null) {
-                AuthScheme authScheme = (AuthScheme) context.getAttribute("preemptive-auth");
-                CredentialsProvider credsProvider = (CredentialsProvider) context
-                        .getAttribute(ClientContext.CREDS_PROVIDER);
-                HttpHost targetHost = (HttpHost) context.getAttribute(ExecutionContext.HTTP_TARGET_HOST);
+                AuthScheme authScheme = (AuthScheme) context.getAttribute(PREEMPTIVE_AUTH);
+                CredentialsProvider credsProvider = (CredentialsProvider) context.getAttribute(HttpClientContext.CREDS_PROVIDER);
+                HttpHost targetHost = (HttpHost) context.getAttribute(HttpCoreContext.HTTP_TARGET_HOST);
                 if (authScheme != null) {
                     Credentials creds = credsProvider
                             .getCredentials(new AuthScope(targetHost.getHostName(), targetHost.getPort()));
@@ -199,4 +212,5 @@ public abstract class AbstractGerritHttpClient implements
             }
         }
     }
+
 }
