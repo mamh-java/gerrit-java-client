@@ -1,18 +1,26 @@
 package com.mage.gerrit.model;
 
 public class PermissionRuleInfo extends BaseModel {
-    private String action;
+    public enum Action {
+        ALLOW,
+        DENY,
+        BLOCK,
+        INTERACTIVE,
+        BATCH
+    }
+
+    private Action action;
 
     private boolean force;
 
     private int min;
     private int max;
 
-    public String getAction() {
+    public Action getAction() {
         return action;
     }
 
-    public void setAction(String action) {
+    public void setAction(Action action) {
         this.action = action;
     }
 
