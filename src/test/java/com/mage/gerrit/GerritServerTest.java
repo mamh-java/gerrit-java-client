@@ -1,5 +1,7 @@
 package com.mage.gerrit;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.mage.gerrit.client.GerritHttpClient;
 import com.mage.gerrit.model.AccountInfo;
 import com.mage.gerrit.model.DocResult;
@@ -20,6 +22,11 @@ public class GerritServerTest {
     private GerritHttpClient client;
     private GerritServer server;
 
+    public static void pprint(Object o) {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        System.out.println(gson.toJson(o));
+    }
+
     @Before
     public void before() throws Exception {
         URI uri = new URI("http://10.0.63.21:8081");
@@ -38,7 +45,7 @@ public class GerritServerTest {
     public void testGetAccount() {
         AccountInfo account = server.getAccount("bright.ma");
         Assert.assertEquals(1000000, account.getId());
-        System.out.println(account);
+        pprint(account);
     }
 
     /**
@@ -49,7 +56,7 @@ public class GerritServerTest {
         AccountInfo account = server.getAccount("bright.ma", true);
         Assert.assertEquals(1000000, account.getId());
         Assert.assertNotNull(account.getRegOn());
-        System.out.println(account);
+        pprint(account);
     }
 
     /**
@@ -62,14 +69,14 @@ public class GerritServerTest {
         Map<String, ProjectAccessInfo> info = server.listAccess(project1);
         Map<String, ProjectAccessInfo> info1 = server.listAccess(project1, project2, project1);
 
-        System.out.println(info);
-        System.out.println(info1);
+        pprint(info);
+        pprint(info1);
 
     }
 
     @Test
     public void searchDocumentation() {
         List<DocResult> l = server.searchDocumentation("test");
-        System.out.println(l);
+        pprint(l);
     }
 }
