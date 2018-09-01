@@ -1,10 +1,9 @@
 package com.mage.gerrit.server;
 
-import com.mage.gerrit.client.GerritHttpClient;
 import com.mage.gerrit.client.AccountClient;
+import com.mage.gerrit.client.GerritHttpClient;
 import com.mage.gerrit.model.DocResult;
 import com.mage.gerrit.model.ProjectAccessInfo;
-import com.mage.gerrit.utils.UrlUtils;
 
 import java.io.IOException;
 import java.net.URI;
@@ -14,7 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.mage.gerrit.utils.UrlUtils.join;
+import static com.mage.gerrit.utils.UrlUtils.joinPath;
+import static com.mage.gerrit.utils.UrlUtils.joinParam;
 
 public class GerritServer {
     private GerritHttpClient client;
@@ -53,25 +53,25 @@ public class GerritServer {
         this.account = account;
     }
 
-    public Map<String, ProjectAccessInfo> listAccess(String... project) {
-        List<String> list = Arrays.asList(project);
-
+    public Map<String, ProjectAccessInfo> listAccess(List<String> projects) {
         try {
-            String s = UrlUtils.joinParam("project", list);
-            String endpoint = join("a/access/", s);
+            String endpoint = joinParam("a/access/", "project", projects);
             return client.get(endpoint, ProjectAccessInfo.class, HashMap.class, String.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
+    }
 
+    public Map<String, ProjectAccessInfo> listAccess(String... project) {
+        List<String> projects = Arrays.asList(project);
+        return listAccess(projects);
     }
 
 
     public List<DocResult> searchDocumentation(String pattern) {
-
         String endpoint = "/Documentation/";
-        endpoint = join(endpoint, "?q=" + pattern);
+        endpoint = joinPath(endpoint, "?q=" + pattern);
         try {
             return client.get(endpoint, DocResult.class, List.class);
         } catch (IOException e) {

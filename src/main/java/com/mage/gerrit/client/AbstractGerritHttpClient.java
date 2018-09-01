@@ -95,7 +95,7 @@ public abstract class AbstractGerritHttpClient implements
 
     protected HttpResponse request(String path, String verb, String requestBody, Header... headers) throws IOException {
         HttpRequestBase method;
-        URI uri = UrlUtils.toJsonApiUri(this.uri, context, path);
+        URI uri = UrlUtils.joinPath(this.uri, context, path);
         switch (verb) {
             case HttpPost.METHOD_NAME:
                 method = new HttpPost(uri);

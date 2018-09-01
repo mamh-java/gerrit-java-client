@@ -5,19 +5,19 @@ import com.mage.gerrit.model.AccountDetailInfo;
 import com.mage.gerrit.model.AccountInfo;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import static com.mage.gerrit.utils.UrlUtils.join;
+import static com.mage.gerrit.utils.UrlUtils.joinPath;
 import static com.mage.gerrit.utils.UrlUtils.joinParam;
 
 public class AccountClient implements AccountApi {
     private static final String ROOT_ENDPOINT = "a/accounts/";
-    GerritHttpClient client;
+    private GerritHttpClient client;
 
     public AccountClient(GerritHttpClient client) {
         this.client = client;
@@ -44,9 +44,9 @@ public class AccountClient implements AccountApi {
             return null;
         }
         try {
-            String endpoint = join(ROOT_ENDPOINT, username);
+            String endpoint = joinPath(ROOT_ENDPOINT, username);
             if (withDetail) {
-                endpoint = join(endpoint, "detail");
+                endpoint = joinPath(endpoint, "detail");
                 return client.get(endpoint, AccountDetailInfo.class);
             } else {
                 return client.get(endpoint, AccountInfo.class);
@@ -65,11 +65,11 @@ public class AccountClient implements AccountApi {
      * @return
      */
     List<AccountInfo> query(String query, String limit) {
-        Map<String, String> map = new HashMap<>();
-        map.put("q", query);
-        map.put("n", limit);
         try {
-            String endpoint = join(ROOT_ENDPOINT, joinParam(map));
+            List<NameValuePair> list = new ArrayList<>();
+            list.add(new BasicNameValuePair("q", query));
+            list.add(new BasicNameValuePair("n", limit));
+            String endpoint = joinParam(ROOT_ENDPOINT, list);
             return client.get(endpoint, AccountInfo.class, List.class);
         } catch (IOException e) {
             e.printStackTrace();
@@ -85,7 +85,10 @@ public class AccountClient implements AccountApi {
      */
     List<AccountInfo> query(String query) {
         try {
-            String endpoint = join(ROOT_ENDPOINT, joinParam("suggest", "q", Arrays.asList(query)));
+            List<NameValuePair> list = new ArrayList<>();
+            list.add(new BasicNameValuePair("suggest", null));
+            list.add(new BasicNameValuePair("q", query));
+            String endpoint = joinParam(ROOT_ENDPOINT, list);
             return client.get(endpoint, AccountInfo.class, List.class);
         } catch (IOException e) {
             e.printStackTrace();
