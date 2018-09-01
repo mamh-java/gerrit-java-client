@@ -9,6 +9,8 @@ import org.junit.Test;
 import java.net.URI;
 import java.util.List;
 
+import static com.mage.gerrit.utils.Utils.pprint;
+
 public class GerritHttpClientTest {
 
     private GerritHttpClient client;
@@ -30,7 +32,7 @@ public class GerritHttpClientTest {
     @Test
     public void testGet() throws Exception {
         AccountInfo o = client.get("a/accounts/bright.ma", AccountInfo.class);
-        System.out.println(o);
+        pprint(o);
     }
 
 
@@ -40,7 +42,7 @@ public class GerritHttpClientTest {
     @Test
     public void testGet1() throws Exception {
         List o = client.get("a/accounts/?q=b", AccountInfo.class, List.class);
-        System.out.println(o);
+        pprint(o);
     }
 
 
@@ -50,7 +52,7 @@ public class GerritHttpClientTest {
     @Test
     public void testGet2() throws Exception {
         String o = client.get("a/accounts/bright.ma/name");
-        System.out.println(o);
+        pprint(o);
     }
 
     /**
@@ -59,7 +61,7 @@ public class GerritHttpClientTest {
     @Test
     public void testGet3() throws Exception {
         String o = client.get("a/accounts/bright.ma/username", true);
-        System.out.println(o);
-     }
+        pprint(o);
+    }
 
 }

@@ -1,7 +1,5 @@
 package com.mage.gerrit.client;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.mage.gerrit.model.AccountInfo;
 import com.mage.gerrit.server.GerritServer;
 
@@ -12,14 +10,12 @@ import org.junit.Test;
 import java.net.URI;
 import java.util.List;
 
+import static com.mage.gerrit.utils.Utils.pprint;
+
 public class AccountClientTest {
     private GerritHttpClient client;
     private GerritServer server;
 
-    public static void pprint(Object o) {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        System.out.println(gson.toJson(o));
-    }
 
     @Before
     public void before() throws Exception {

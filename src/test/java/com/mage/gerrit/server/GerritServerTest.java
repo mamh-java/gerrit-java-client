@@ -1,11 +1,8 @@
 package com.mage.gerrit.server;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.mage.gerrit.client.GerritHttpClient;
 import com.mage.gerrit.model.DocResult;
 import com.mage.gerrit.model.ProjectAccessInfo;
-import com.mage.gerrit.server.GerritServer;
 
 import org.junit.After;
 import org.junit.Before;
@@ -15,16 +12,13 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
+import static com.mage.gerrit.utils.Utils.pprint;
+
 
 public class GerritServerTest {
 
     private GerritHttpClient client;
     private GerritServer server;
-
-    public static void pprint(Object o) {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        System.out.println(gson.toJson(o));
-    }
 
     @Before
     public void before() throws Exception {
@@ -36,7 +30,6 @@ public class GerritServerTest {
     @After
     public void after() throws Exception {
     }
-
 
 
     /**
