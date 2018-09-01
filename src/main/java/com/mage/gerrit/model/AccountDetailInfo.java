@@ -10,7 +10,7 @@ public class AccountDetailInfo extends AccountInfo {
      * The timestamp of when the account was registered.
      */
     @JsonProperty("registered_on")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
     private Timestamp regOn;
 
 
