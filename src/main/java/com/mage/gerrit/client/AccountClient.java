@@ -16,6 +16,7 @@ import static com.mage.gerrit.utils.UrlUtils.join;
 import static com.mage.gerrit.utils.UrlUtils.joinParam;
 
 public class AccountClient implements AccountApi {
+    private static final String ROOT_ENDPOINT = "a/accounts/";
     GerritHttpClient client;
 
     public AccountClient(GerritHttpClient client) {
@@ -43,7 +44,7 @@ public class AccountClient implements AccountApi {
             return null;
         }
         try {
-            String endpoint = join("a/accounts/", username);
+            String endpoint = join(ROOT_ENDPOINT, username);
             if (withDetail) {
                 endpoint = join(endpoint, "detail");
                 return client.get(endpoint, AccountDetailInfo.class);
@@ -68,7 +69,7 @@ public class AccountClient implements AccountApi {
         map.put("q", query);
         map.put("n", limit);
         try {
-            String endpoint = join("a/accounts/", joinParam(map));
+            String endpoint = join(ROOT_ENDPOINT, joinParam(map));
             return client.get(endpoint, AccountInfo.class, List.class);
         } catch (IOException e) {
             e.printStackTrace();
@@ -84,7 +85,7 @@ public class AccountClient implements AccountApi {
      */
     List<AccountInfo> query(String query) {
         try {
-            String endpoint = join("a/accounts/", joinParam("suggest", "q", Arrays.asList(query)));
+            String endpoint = join(ROOT_ENDPOINT, joinParam("suggest", "q", Arrays.asList(query)));
             return client.get(endpoint, AccountInfo.class, List.class);
         } catch (IOException e) {
             e.printStackTrace();
