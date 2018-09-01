@@ -53,13 +53,34 @@ public class UrlUtilsTest {
      */
     @Test
     public void joinParam1() {
-
+        String expected = "/a/accounts/?suggest&username=mage&password=123&age=22";
+        List<String> list = Stream.of(
+                "git/android/kernel/msm-3.14",
+                "git/android/kernel/lk"
+        ).collect(Collectors.toList());
+        String path = UrlUtils.joinParam(ROOT_ENDPOINT, "project", list);
+        System.out.println(path);
     }
 
 
+    /**
+     * public static String joinPath(final String path1, final String path2)
+     */
     @Test
     public void joinPath() {
+        String expected = "a/accounts/mage/suggest";
+        String mage = UrlUtils.joinPath("a/accounts", "mage/suggest");
+        assertEquals(expected, mage);
+        mage = UrlUtils.joinPath("a/accounts/", "mage/suggest");
+        assertEquals(expected, mage);
+        mage = UrlUtils.joinPath("a/accounts", "/mage/suggest");
+        assertEquals(expected, mage);
+        mage = UrlUtils.joinPath("a/accounts/", "/mage/suggest");
+        assertEquals(expected, mage);
 
+        expected = "a/accounts/mage/suggest/";
+        mage = UrlUtils.joinPath("a/accounts/", "/mage/suggest/");
+        assertEquals(expected, mage);
     }
 
     /**
@@ -70,9 +91,10 @@ public class UrlUtilsTest {
 
         URI uri = new URI("http://10.0.63.21:8080");
         String context = "hibernate_01";
-        String path = "a/accounts/suggest.jsp";
-        String url = UrlUtils.joinPath(uri, context, path).toString();
-        System.out.println(url);
+        String path = "a/accounts/suggest.jsp?username=mamge&password=123";
+        URI uri1 = UrlUtils.joinPath(uri, context, path);
+
+        System.out.println(uri1);
 
     }
 

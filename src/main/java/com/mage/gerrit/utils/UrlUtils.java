@@ -66,14 +66,16 @@ public final class UrlUtils {
     public static URI joinPath(final URI uri, final String context, final String path) {
         URIBuilder uriBuilder = new URIBuilder(uri);
         uriBuilder = addPath(uriBuilder, context);
-        uriBuilder = addPath(uriBuilder, path);
         try {
-            return uriBuilder.build().normalize();
+            return uriBuilder.build().normalize().resolve(path);
         } catch (URISyntaxException e) {
-
+            e.printStackTrace();
         }
-
-        return uri.resolve("/");
+        String p = path;
+        if (!p.matches("(?i)https?://.*")) {
+            p = joinPath(context, p);
+        }
+        return uri.resolve("/").resolve(p.replace(" ", "%20"));
     }
 
     private static URIBuilder addPath(URIBuilder uriBuilder, String subPath) {
