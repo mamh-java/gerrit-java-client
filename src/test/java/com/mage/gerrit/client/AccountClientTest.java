@@ -1,6 +1,7 @@
 package com.mage.gerrit.client;
 
 import com.mage.gerrit.model.AccountInfo;
+import com.mage.gerrit.model.AccountNameInput;
 import com.mage.gerrit.model.ListAccountsOption;
 import com.mage.gerrit.server.GerritServer;
 
@@ -10,6 +11,7 @@ import org.junit.Test;
 import java.net.URI;
 import java.util.List;
 
+import static com.mage.gerrit.utils.Utils.pprint;
 import static org.junit.Assert.assertEquals;
 
 public class AccountClientTest {
@@ -113,10 +115,23 @@ public class AccountClientTest {
 
     @Test
     public void testName() {
-        String name = server.getAccount().name();
+        String name = server.getAccount().getFullName();
         assertEquals("Minghui Ma", name);
-        name = server.getAccount().name("1000001");
+        name = server.getAccount().getFullName("1000001");
         assertEquals("Buildfarm", name);
+    }
+
+    @Test
+    public void testUsername() {
+        String username = server.getAccount().getUserName();
+        System.out.println(username);
+    }
+
+    @Test
+    public void testSetName() {
+        AccountNameInput input = new AccountNameInput("new getFullName");
+        String accountInfo = server.getAccount().setFullName(input);
+        pprint(accountInfo);
     }
 
 

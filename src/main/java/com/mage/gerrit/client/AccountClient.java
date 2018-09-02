@@ -3,6 +3,7 @@ package com.mage.gerrit.client;
 import com.mage.gerrit.api.AccountApi;
 import com.mage.gerrit.model.AccountDetailInfo;
 import com.mage.gerrit.model.AccountInfo;
+import com.mage.gerrit.model.AccountNameInput;
 import com.mage.gerrit.model.ListAccountsOption;
 
 import org.apache.commons.lang3.StringUtils;
@@ -70,7 +71,7 @@ public class AccountClient implements AccountApi {
      *
      * @return
      */
-    public String name(String id) {
+    public String getFullName(String id) {
         if (StringUtils.isEmpty(id)) {
             id = "self";
         }
@@ -86,10 +87,65 @@ public class AccountClient implements AccountApi {
         return null;
     }
 
-    public String name() {
-        return name("self");
+    public String getFullName() {
+        return getFullName("self");
     }
 
+    public String getUserName() {
+        return getUserName("self");
+    }
+
+    /**
+     * Get Username
+     * 'GET /accounts/{account-id}/getUserName'
+     *
+     * @param id
+     * @return
+     */
+    public String getUserName(String id) {
+        if (StringUtils.isEmpty(id)) {
+            id = "self";
+        }
+        try {
+            String endpoint = joinPath(ROOT_ENDPOINT, id);
+            endpoint = joinPath(endpoint, "username");
+            return client.get(endpoint);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public String setFullName(AccountNameInput account) {
+        return setFullName("self", account);
+    }
+
+    /**
+     * Set Account Name
+     * 'PUT /accounts/{account-id}/getFullName'
+     * <p>
+     * Sets the full getFullName of an account.
+     * <p>
+     * The new account getFullName must be provided in the request body inside an AccountNameInput entity.
+     * <p>
+     * Some realms may not allow to modify the account getFullName.
+     * In this case the request is rejected with “405 Method Not Allowed”.
+     *
+     * @param id
+     * @return
+     */
+    public String setFullName(String id, AccountNameInput account) {
+        String endpoint = joinPath(ROOT_ENDPOINT, id);
+        endpoint = joinPath(endpoint, "name");
+        try {
+            return client.put(endpoint, account);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 
     /**
      * Query Account  'GET /accounts/'
