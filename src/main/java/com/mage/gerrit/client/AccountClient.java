@@ -6,6 +6,7 @@ import com.mage.gerrit.model.AccountInfo;
 import com.mage.gerrit.model.AccountNameInput;
 import com.mage.gerrit.model.EmailInfo;
 import com.mage.gerrit.model.ListAccountsOption;
+import com.mage.gerrit.model.SshKeyInfo;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.NameValuePair;
@@ -196,11 +197,56 @@ public class AccountClient implements AccountApi {
         return getEmails("self", null);
     }
 
+    /**
+     * Get SSH Key
+     * 'GET /accounts/{account-id}/sshkeys/{ssh-key-id}'
+     *
+     * @param id
+     * @param keyId
+     * @return
+     */
+    public SshKeyInfo getSshKey(String id, String keyId) {
+        if (StringUtils.isEmpty(id)) {
+            id = "self";
+        }
+        try {
+            String endpoint = joinPath(ROOT_ENDPOINT, id);
+            endpoint = joinPath(endpoint, "sshkeys");
+            endpoint = joinPath(endpoint, keyId);
+            return client.get(endpoint, SshKeyInfo.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-
-    public String setFullName(AccountNameInput account) {
-        return setFullName("self", account);
+        return null;
     }
+
+    /**
+     * List SSH Keys
+     * 'GET /accounts/{account-id}/sshkeys'
+     *
+     * @param id
+     * @return
+     */
+    public List<SshKeyInfo> getSshKeys(String id) {
+        if (StringUtils.isEmpty(id)) {
+            id = "self";
+        }
+        try {
+            String endpoint = joinPath(ROOT_ENDPOINT, id);
+            endpoint = joinPath(endpoint, "sshkeys");
+            return client.get(endpoint, SshKeyInfo.class, List.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public List<SshKeyInfo> getSshKeys() {
+        return getSshKeys("self");
+    }
+
 
     /**
      * Set Account Name
@@ -226,6 +272,10 @@ public class AccountClient implements AccountApi {
         }
 
         return null;
+    }
+
+    public String setFullName(AccountNameInput account) {
+        return setFullName("self", account);
     }
 
     /**

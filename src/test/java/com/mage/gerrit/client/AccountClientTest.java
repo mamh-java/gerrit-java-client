@@ -4,6 +4,7 @@ import com.mage.gerrit.model.AccountInfo;
 import com.mage.gerrit.model.AccountNameInput;
 import com.mage.gerrit.model.EmailInfo;
 import com.mage.gerrit.model.ListAccountsOption;
+import com.mage.gerrit.model.SshKeyInfo;
 import com.mage.gerrit.server.GerritServer;
 
 import org.junit.Before;
@@ -161,12 +162,30 @@ public class AccountClientTest {
     }
 
     @Test
-    public void test() {
+    public void testGetEmails() {
         List<EmailInfo> emails = server.getAccount().getEmails();
         pprint(emails);
 
         emails = server.getAccount().getEmails("jenkins");
         pprint(emails);
+    }
+
+    @Test
+    public void testGetSshKeys() {
+        SshKeyInfo sshKeys = server.getAccount().getSshKey("self", "8");
+        pprint(sshKeys);
+    }
+
+    @Test
+    public void testGetSshKeys1() {
+        List<SshKeyInfo> sshKeys = server.getAccount().getSshKeys();
+        pprint(sshKeys);
+    }
+
+    @Test
+    public void testGetSshKeys2() {
+        List<SshKeyInfo> sshKeys = server.getAccount().getSshKeys("test");
+        pprint(sshKeys);
     }
 
     @Test
