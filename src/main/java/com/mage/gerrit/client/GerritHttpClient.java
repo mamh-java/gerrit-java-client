@@ -7,6 +7,7 @@ import com.mage.gerrit.model.BaseModel;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -133,7 +134,7 @@ public class GerritHttpClient extends AbstractGerritHttpClient implements Gerrit
 
     @Override
     public String get(String path, boolean raw) throws IOException {
-        HttpResponse response = request(path, "GET", null);
+        HttpResponse response = request(path, HttpGet.METHOD_NAME, null);
         checkResponse(response);
         byte[] bytes = getResponseBytes(response);
         if (raw) {
@@ -144,4 +145,12 @@ public class GerritHttpClient extends AbstractGerritHttpClient implements Gerrit
     }
 
 
+    public <E extends BaseModel>
+    String put(String path, E object) throws IOException {
+        String requestBody = mapper.writeValueAsString(object);
+        HttpResponse response = request(path, HttpPut.METHOD_NAME, requestBody);
+        checkResponse(response);
+        byte[] bytes = getResponseBytes(response);
+        return mapper.readValue(bytes, String.class);
+    }
 }
