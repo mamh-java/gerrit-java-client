@@ -114,7 +114,7 @@ public class AccountClientTest {
     }
 
     @Test
-    public void testName() {
+    public void testGetFullName() {
         String name = server.getAccount().getFullName();
         assertEquals("Minghui Ma", name);
         name = server.getAccount().getFullName("1000001");
@@ -125,6 +125,29 @@ public class AccountClientTest {
     public void testUsername() {
         String username = server.getAccount().getUserName();
         System.out.println(username);
+    }
+
+    @Test
+    public void testGetActive() {
+        String active = server.getAccount().getActive();
+        assertEquals("ok", active);
+
+        active = server.getAccount().getActive("bright.ma");
+        assertEquals("ok", active);
+
+        active = server.getAccount().getActive("1000001");
+        assertEquals("ok", active);
+
+        active = server.getAccount().getActive("buildfarm@blackshark.com");
+        assertEquals("ok", active);
+
+    }
+
+    @Test
+    public void testGetActive1() {
+        String active = server.getAccount().getActive("jira@blackshark.com");
+        System.out.println(active);
+        assertEquals(null, active);
     }
 
     @Test

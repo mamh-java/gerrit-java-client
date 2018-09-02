@@ -117,6 +117,33 @@ public class AccountClient implements AccountApi {
         return null;
     }
 
+    /**
+     * Get Active
+     * 'GET /accounts/{account-id}/active'
+     *
+     * @param id
+     * @return
+     */
+    public String getActive(String id) {
+        if (StringUtils.isEmpty(id)) {
+            id = "self";
+        }
+        try {
+            String endpoint = joinPath(ROOT_ENDPOINT, id);
+            endpoint = joinPath(endpoint, "active");
+            return client.get(endpoint);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public String getActive() {
+        return getActive("self");
+    }
+
+
     public String setFullName(AccountNameInput account) {
         return setFullName("self", account);
     }
