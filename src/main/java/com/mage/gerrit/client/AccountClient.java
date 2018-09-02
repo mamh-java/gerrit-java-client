@@ -3,6 +3,7 @@ package com.mage.gerrit.client;
 import com.mage.gerrit.api.AccountApi;
 import com.mage.gerrit.model.AccountDetailInfo;
 import com.mage.gerrit.model.AccountInfo;
+import com.mage.gerrit.model.ListAccountsOption;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.NameValuePair;
@@ -12,8 +13,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.mage.gerrit.utils.UrlUtils.joinPath;
 import static com.mage.gerrit.utils.UrlUtils.joinParam;
+import static com.mage.gerrit.utils.UrlUtils.joinPath;
 
 public class AccountClient implements AccountApi {
     private static final String ROOT_ENDPOINT = "a/accounts/";
@@ -25,6 +26,7 @@ public class AccountClient implements AccountApi {
 
 
     /**
+     * Get Account  'GET /accounts/{account-id}'
      * 什么参数都没有就获取自己本身账号信息
      *
      * @return
@@ -57,6 +59,48 @@ public class AccountClient implements AccountApi {
         return null;
     }
 
+    @Override
+    public AccountDetailInfo detail(String username) {
+        return (AccountDetailInfo) get(username, true);
+    }
+
+    /**
+     * Get Account Full Name
+     * 'GET /accounts/{account-id}/name'
+     *
+     * @return
+     */
+    public String name(String id) {
+        if (StringUtils.isEmpty(id)) {
+            id = "self";
+        }
+
+        try {
+            String endpoint = joinPath(ROOT_ENDPOINT, id);
+            endpoint = joinPath(endpoint, "name");
+            return client.get(endpoint);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public String name() {
+        return name("self");
+    }
+
+
+    /**
+     * Query Account  'GET /accounts/'
+     *
+     * @param query
+     * @return
+     */
+    List<AccountInfo> query(String query) {
+        return query(query, null, false, null);
+    }
+
     /**
      * GET /accounts/?q=name:John+email:example.com&n=2 HTTP/1.0
      *
@@ -65,16 +109,18 @@ public class AccountClient implements AccountApi {
      * @return
      */
     List<AccountInfo> query(String query, String limit) {
-        try {
-            List<NameValuePair> list = new ArrayList<>();
-            list.add(new BasicNameValuePair("q", query));
-            list.add(new BasicNameValuePair("n", limit));
-            String endpoint = joinParam(ROOT_ENDPOINT, list);
-            return client.get(endpoint, AccountInfo.class, List.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return query(query, limit, false, null);
+    }
+
+    /**
+     * 专门用了 模糊查询的。也就是 suggest 查询模式
+     *
+     * @param query
+     * @param limit
+     * @return
+     */
+    List<AccountInfo> suggest(String query, String limit) {
+        return query(query, limit, true, null);
     }
 
     /**
@@ -83,11 +129,21 @@ public class AccountClient implements AccountApi {
      * @param query
      * @return
      */
-    List<AccountInfo> query(String query) {
+    List<AccountInfo> query(String query, String limit, boolean isSuggest, ListAccountsOption option) {
         try {
             List<NameValuePair> list = new ArrayList<>();
-            list.add(new BasicNameValuePair("suggest", null));
+            if (isSuggest) {//如果是suggest搜索就加上这个 suggest 参数
+                list.add(new BasicNameValuePair("suggest", null));
+            }
+
             list.add(new BasicNameValuePair("q", query));
+
+            if (StringUtils.isNotEmpty(limit) && StringUtils.isNumeric(limit)) {
+                list.add(new BasicNameValuePair("n", limit));//默认是10个
+            }
+            if (option != null) {
+                list.add(new BasicNameValuePair("o", option.toString()));
+            }
             String endpoint = joinParam(ROOT_ENDPOINT, list);
             return client.get(endpoint, AccountInfo.class, List.class);
         } catch (IOException e) {
@@ -96,8 +152,5 @@ public class AccountClient implements AccountApi {
         return null;
     }
 
-    @Override
-    public AccountDetailInfo detail(String username) {
-        return (AccountDetailInfo) get(username, true);
-    }
+
 }
