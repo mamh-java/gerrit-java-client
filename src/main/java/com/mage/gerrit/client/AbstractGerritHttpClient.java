@@ -142,6 +142,9 @@ public abstract class AbstractGerritHttpClient implements
         }
         HttpEntity entity = response.getEntity();
 
+        if (entity == null) {
+            throw new HttpResponseException(status, response.getStatusLine().getReasonPhrase());
+        }
         Header contentType = entity.getContentType();
         if (contentType != null && !contentType.getValue().contains(JSON_MIME_TYPE)) {
             throw new HttpResponseException(status, String.format("Expected JSON but got '%s'.", contentType.getValue()));
