@@ -5,6 +5,7 @@ import com.mage.gerrit.model.AccountDetailInfo;
 import com.mage.gerrit.model.AccountInfo;
 import com.mage.gerrit.model.AccountNameInput;
 import com.mage.gerrit.model.EmailInfo;
+import com.mage.gerrit.model.GpgKeyInfo;
 import com.mage.gerrit.model.ListAccountsOption;
 import com.mage.gerrit.model.SshKeyInfo;
 
@@ -15,6 +16,7 @@ import org.apache.http.message.BasicNameValuePair;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static com.mage.gerrit.utils.UrlUtils.joinParam;
 import static com.mage.gerrit.utils.UrlUtils.joinPath;
@@ -247,6 +249,53 @@ public class AccountClient implements AccountApi {
         return getSshKeys("self");
     }
 
+    /**
+     * List GPG Keys
+     * 'GET /accounts/{account-id}/gpgkeys'
+     * Returns the GPG keys of an account.
+     *
+     * @param id
+     * @return
+     */
+    public Map<String, GpgKeyInfo> getGpgkeys(String id) {
+        if (StringUtils.isEmpty(id)) {
+            id = "self";
+        }
+        try {
+            String endpoint = joinPath(ROOT_ENDPOINT, id);
+            endpoint = joinPath(endpoint, "gpgkeys");
+            return client.get(endpoint, GpgKeyInfo.class, Map.class, String.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    /**
+     * Get GPG Key
+     * 'GET /accounts/{account-id}/gpgkeys/{gpg-key-id}'
+     * Retrieves a GPG key of a user.
+     *
+     * @param id
+     * @param keyId
+     * @return
+     */
+    public GpgKeyInfo getGpgkey(String id, String keyId) {
+        if (StringUtils.isEmpty(id)) {
+            id = "self";
+        }
+        try {
+            String endpoint = joinPath(ROOT_ENDPOINT, id);
+            endpoint = joinPath(endpoint, "gpgkeys");
+            endpoint = joinPath(endpoint, keyId);
+            return client.get(endpoint, GpgKeyInfo.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 
     /**
      * Set Account Name
