@@ -2,6 +2,7 @@ package com.mage.gerrit.client;
 
 import com.mage.gerrit.model.AccountInfo;
 import com.mage.gerrit.model.AccountNameInput;
+import com.mage.gerrit.model.CapabilityInfo;
 import com.mage.gerrit.model.EmailInfo;
 import com.mage.gerrit.model.ListAccountsOption;
 import com.mage.gerrit.model.SshKeyInfo;
@@ -12,6 +13,8 @@ import org.junit.Test;
 
 import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.mage.gerrit.utils.Utils.pprint;
 import static org.junit.Assert.assertEquals;
@@ -186,6 +189,30 @@ public class AccountClientTest {
     public void testGetSshKeys2() {
         List<SshKeyInfo> sshKeys = server.getAccount().getSshKeys("test");
         pprint(sshKeys);
+    }
+
+    @Test
+    public void testGetCapabilities() {
+        CapabilityInfo capabilityInfo = server.getAccount().getCapabilities();
+        pprint(capabilityInfo);
+
+
+        capabilityInfo = server.getAccount().getCapabilities("test");
+        pprint(capabilityInfo);
+    }
+
+    @Test
+    public void testGetCapabilities1() {
+        List<String> list = Stream.of("createAccount", "createGroup")
+                .collect(Collectors.toList());
+        CapabilityInfo capabilityInfo = server.getAccount().getCapabilities("self", list);
+        pprint(capabilityInfo);
+    }
+
+    @Test
+    public void testGetCapability(){
+        String s = server.getAccount().getCapability("self", "createGroup");
+        System.out.println(s);
     }
 
     @Test

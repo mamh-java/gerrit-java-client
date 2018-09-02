@@ -4,6 +4,7 @@ import com.mage.gerrit.api.AccountApi;
 import com.mage.gerrit.model.AccountDetailInfo;
 import com.mage.gerrit.model.AccountInfo;
 import com.mage.gerrit.model.AccountNameInput;
+import com.mage.gerrit.model.CapabilityInfo;
 import com.mage.gerrit.model.EmailInfo;
 import com.mage.gerrit.model.GpgKeyInfo;
 import com.mage.gerrit.model.ListAccountsOption;
@@ -17,6 +18,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.mage.gerrit.utils.UrlUtils.joinParam;
 import static com.mage.gerrit.utils.UrlUtils.joinPath;
@@ -290,6 +292,79 @@ public class AccountClient implements AccountApi {
             endpoint = joinPath(endpoint, "gpgkeys");
             endpoint = joinPath(endpoint, keyId);
             return client.get(endpoint, GpgKeyInfo.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    /**
+     * List Account Capabilities
+     * 'GET /accounts/{account-id}/capabilities'
+     * Returns the global capabilities that are enabled for the specified user.
+     * <p>
+     * If the global capabilities for the calling user should be listed, self can be used as account-id.
+     * This can be used by UI tools to discover if administrative features are available to the caller,
+     * so they can hide (or show) relevant UI actions.
+     */
+    public CapabilityInfo getCapabilities(String id) {
+        if (StringUtils.isEmpty(id)) {
+            id = "self";
+        }
+        try {
+            String endpoint = joinPath(ROOT_ENDPOINT, id);
+            endpoint = joinPath(endpoint, "capabilities");
+            return client.get(endpoint, CapabilityInfo.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public CapabilityInfo getCapabilities() {
+        return getCapabilities("self");
+    }
+
+    public CapabilityInfo getCapabilities(String id, List<String> filters) {
+        List<NameValuePair> list = filters.stream().map(
+                p -> new BasicNameValuePair("q", p)).collect(Collectors.toList());
+
+        if (StringUtils.isEmpty(id)) {
+            id = "self";
+        }
+        try {
+            String endpoint = joinPath(ROOT_ENDPOINT, id);
+            endpoint = joinPath(endpoint, "capabilities");
+            endpoint = joinParam(endpoint, list);
+            return client.get(endpoint, CapabilityInfo.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+
+    /**
+     * Check if you can create groups
+     * GET /accounts/self/capabilities/createGroup HTTP/1.0
+     * 这个在2.14版本中 返回的 不是 application/json 格式了(而是text/plain;charset=utf-8),shit
+     *
+     * @param id
+     * @param capabilityId
+     * @return
+     */
+    public String getCapability(String id, String capabilityId) {
+        if (StringUtils.isEmpty(id)) {
+            id = "self";
+        }
+        try {
+            String endpoint = joinPath(ROOT_ENDPOINT, id);
+            endpoint = joinPath(endpoint, "capabilities");
+            endpoint = joinPath(endpoint, capabilityId);
+            return client.get(endpoint);
         } catch (IOException e) {
             e.printStackTrace();
         }
