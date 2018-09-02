@@ -4,6 +4,7 @@ import com.mage.gerrit.api.AccountApi;
 import com.mage.gerrit.model.AccountDetailInfo;
 import com.mage.gerrit.model.AccountInfo;
 import com.mage.gerrit.model.AccountNameInput;
+import com.mage.gerrit.model.EmailInfo;
 import com.mage.gerrit.model.ListAccountsOption;
 
 import org.apache.commons.lang3.StringUtils;
@@ -142,6 +143,59 @@ public class AccountClient implements AccountApi {
     public String getActive() {
         return getActive("self");
     }
+
+    /**
+     * Get HTTP Password
+     * 'GET /accounts/{account-id}/password.http'
+     * 这个方法好像不能用,应该是取消了
+     *
+     * @param id
+     * @return
+     */
+    public String getHttpPasswd(String id) {
+        if (StringUtils.isEmpty(id)) {
+            id = "self";
+        }
+        try {
+            String endpoint = joinPath(ROOT_ENDPOINT, id);
+            endpoint = joinPath(endpoint, "password.http");
+            return client.get(endpoint);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public String getHttpPasswd() {
+        return getHttpPasswd("self");
+    }
+
+    public List<EmailInfo> getEmails(String id, String emailId) {
+        if (StringUtils.isEmpty(id)) {
+            id = "self";
+        }
+        try {
+            String endpoint = joinPath(ROOT_ENDPOINT, id);
+            endpoint = joinPath(endpoint, "emails");
+            if (StringUtils.isNotEmpty(emailId))
+                endpoint = joinPath(endpoint, emailId);
+            return client.get(endpoint, EmailInfo.class, List.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public List<EmailInfo> getEmails(String id) {
+        return getEmails(id, null);
+    }
+
+    public List<EmailInfo> getEmails() {
+        return getEmails("self", null);
+    }
+
 
 
     public String setFullName(AccountNameInput account) {

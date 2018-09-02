@@ -2,6 +2,7 @@ package com.mage.gerrit.client;
 
 import com.mage.gerrit.model.AccountInfo;
 import com.mage.gerrit.model.AccountNameInput;
+import com.mage.gerrit.model.EmailInfo;
 import com.mage.gerrit.model.ListAccountsOption;
 import com.mage.gerrit.server.GerritServer;
 
@@ -148,6 +149,24 @@ public class AccountClientTest {
         String active = server.getAccount().getActive("jira@blackshark.com");
         System.out.println(active);
         assertEquals(null, active);
+    }
+
+
+    @Test
+    public void testGetHttpPasswd() {
+        String pw = server.getAccount().getHttpPasswd("");
+        System.out.println(pw);
+        server.getAccount().getHttpPasswd("bright.ma");
+        System.out.println(pw);
+    }
+
+    @Test
+    public void test() {
+        List<EmailInfo> emails = server.getAccount().getEmails();
+        pprint(emails);
+
+        emails = server.getAccount().getEmails("jenkins");
+        pprint(emails);
     }
 
     @Test
