@@ -71,20 +71,14 @@ public class AccountClient implements AccountApi {
         return (AccountDetailInfo) get(username, true);
     }
 
-    /**
-     * Get Account Full Name
-     * 'GET /accounts/{account-id}/name'
-     *
-     * @return
-     */
-    public String getFullName(String id) {
+    private String getString(String id, String name) {
         if (StringUtils.isEmpty(id)) {
             id = "self";
         }
 
         try {
             String endpoint = joinPath(ROOT_ENDPOINT, id);
-            endpoint = joinPath(endpoint, "name");
+            endpoint = joinPath(endpoint, name);
             return client.get(endpoint);
         } catch (IOException e) {
             e.printStackTrace();
@@ -92,6 +86,18 @@ public class AccountClient implements AccountApi {
 
         return null;
     }
+
+    /**
+     * Get Account Full Name
+     * 'GET /accounts/{account-id}/name'
+     *
+     * @return
+     */
+    public String getFullName(String id) {
+        return getString(id, "name");
+    }
+
+
 
     public String getFullName() {
         return getFullName("self");
@@ -109,18 +115,7 @@ public class AccountClient implements AccountApi {
      * @return
      */
     public String getUserName(String id) {
-        if (StringUtils.isEmpty(id)) {
-            id = "self";
-        }
-        try {
-            String endpoint = joinPath(ROOT_ENDPOINT, id);
-            endpoint = joinPath(endpoint, "username");
-            return client.get(endpoint);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return null;
+        return getString(id, "username");
     }
 
     /**
@@ -131,18 +126,7 @@ public class AccountClient implements AccountApi {
      * @return
      */
     public String getActive(String id) {
-        if (StringUtils.isEmpty(id)) {
-            id = "self";
-        }
-        try {
-            String endpoint = joinPath(ROOT_ENDPOINT, id);
-            endpoint = joinPath(endpoint, "active");
-            return client.get(endpoint);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return null;
+        return getString(id, "active");
     }
 
     public String getActive() {
@@ -158,18 +142,7 @@ public class AccountClient implements AccountApi {
      * @return
      */
     public String getHttpPasswd(String id) {
-        if (StringUtils.isEmpty(id)) {
-            id = "self";
-        }
-        try {
-            String endpoint = joinPath(ROOT_ENDPOINT, id);
-            endpoint = joinPath(endpoint, "password.http");
-            return client.get(endpoint);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return null;
+        return getString(id, "password.http");
     }
 
     public String getHttpPasswd() {
