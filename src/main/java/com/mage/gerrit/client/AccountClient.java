@@ -9,6 +9,7 @@ import com.mage.gerrit.model.EmailInfo;
 import com.mage.gerrit.model.GpgKeyInfo;
 import com.mage.gerrit.model.GroupInfo;
 import com.mage.gerrit.model.ListAccountsOption;
+import com.mage.gerrit.model.PreferencesInfo;
 import com.mage.gerrit.model.SshKeyInfo;
 
 import org.apache.commons.lang3.StringUtils;
@@ -392,6 +393,33 @@ public class AccountClient implements AccountApi {
             String endpoint = joinPath(ROOT_ENDPOINT, id);
             endpoint = joinPath(endpoint, "avatar.change.url");
             return client.get(endpoint);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    /**
+     * Get User Preferences
+     * 'GET /accounts/{account-id}/preferences'
+     * <p>
+     * Retrieves the user’s preferences.
+     * As result the account preferences of the user are returned as a PreferencesInfo entity.
+     * As result the account preferences of the user are returned as a PreferencesInfo entity.
+     * <p>
+     * Users may only retrieve the preferences for their own account,
+     * unless they are an Administrator or a member of a group that is
+     * granted the ModifyAccount capability, in which case they can retrieve
+     * the preferences for any account.
+     */
+    public PreferencesInfo getPreferences(String id) {
+        id = StringUtils.isEmpty(id) ? "self" : id;
+
+        try {
+            String endpoint = joinPath(ROOT_ENDPOINT, id);
+            endpoint = joinPath(endpoint, "preferences");
+            return client.get(endpoint, PreferencesInfo.class);
         } catch (IOException e) {
             e.printStackTrace();
         }

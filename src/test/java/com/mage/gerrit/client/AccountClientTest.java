@@ -6,6 +6,7 @@ import com.mage.gerrit.model.CapabilityInfo;
 import com.mage.gerrit.model.EmailInfo;
 import com.mage.gerrit.model.GroupInfo;
 import com.mage.gerrit.model.ListAccountsOption;
+import com.mage.gerrit.model.PreferencesInfo;
 import com.mage.gerrit.model.QueueType;
 import com.mage.gerrit.model.SshKeyInfo;
 import com.mage.gerrit.server.GerritServer;
@@ -244,5 +245,14 @@ public class AccountClientTest {
     public void testGetAvatarUrl() {
         String avatar = server.getAccount().getAvatar("self");
         System.out.println(avatar);
+    }
+
+    @Test
+    public void testGetPreferences() {
+        PreferencesInfo info = server.getAccount().getPreferences("");
+        pprint(info);
+
+        info = server.getAccount().getPreferences("self");
+        pprint(info);
     }
 }
