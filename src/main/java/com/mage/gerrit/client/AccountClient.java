@@ -7,6 +7,7 @@ import com.mage.gerrit.model.AccountNameInput;
 import com.mage.gerrit.model.CapabilityInfo;
 import com.mage.gerrit.model.EmailInfo;
 import com.mage.gerrit.model.GpgKeyInfo;
+import com.mage.gerrit.model.GroupInfo;
 import com.mage.gerrit.model.ListAccountsOption;
 import com.mage.gerrit.model.SshKeyInfo;
 
@@ -72,9 +73,7 @@ public class AccountClient implements AccountApi {
     }
 
     private String getString(String id, String name) {
-        if (StringUtils.isEmpty(id)) {
-            id = "self";
-        }
+        id = StringUtils.isEmpty(id) ? "self" : id;
 
         try {
             String endpoint = joinPath(ROOT_ENDPOINT, id);
@@ -96,7 +95,6 @@ public class AccountClient implements AccountApi {
     public String getFullName(String id) {
         return getString(id, "name");
     }
-
 
 
     public String getFullName() {
@@ -150,9 +148,8 @@ public class AccountClient implements AccountApi {
     }
 
     public List<EmailInfo> getEmails(String id, String emailId) {
-        if (StringUtils.isEmpty(id)) {
-            id = "self";
-        }
+        id = StringUtils.isEmpty(id) ? "self" : id;
+
         try {
             String endpoint = joinPath(ROOT_ENDPOINT, id);
             endpoint = joinPath(endpoint, "emails");
@@ -183,9 +180,8 @@ public class AccountClient implements AccountApi {
      * @return
      */
     public SshKeyInfo getSshKey(String id, String keyId) {
-        if (StringUtils.isEmpty(id)) {
-            id = "self";
-        }
+        id = StringUtils.isEmpty(id) ? "self" : id;
+
         try {
             String endpoint = joinPath(ROOT_ENDPOINT, id);
             endpoint = joinPath(endpoint, "sshkeys");
@@ -206,9 +202,8 @@ public class AccountClient implements AccountApi {
      * @return
      */
     public List<SshKeyInfo> getSshKeys(String id) {
-        if (StringUtils.isEmpty(id)) {
-            id = "self";
-        }
+        id = StringUtils.isEmpty(id) ? "self" : id;
+
         try {
             String endpoint = joinPath(ROOT_ENDPOINT, id);
             endpoint = joinPath(endpoint, "sshkeys");
@@ -233,9 +228,8 @@ public class AccountClient implements AccountApi {
      * @return
      */
     public Map<String, GpgKeyInfo> getGpgkeys(String id) {
-        if (StringUtils.isEmpty(id)) {
-            id = "self";
-        }
+        id = StringUtils.isEmpty(id) ? "self" : id;
+
         try {
             String endpoint = joinPath(ROOT_ENDPOINT, id);
             endpoint = joinPath(endpoint, "gpgkeys");
@@ -257,9 +251,8 @@ public class AccountClient implements AccountApi {
      * @return
      */
     public GpgKeyInfo getGpgkey(String id, String keyId) {
-        if (StringUtils.isEmpty(id)) {
-            id = "self";
-        }
+        id = StringUtils.isEmpty(id) ? "self" : id;
+
         try {
             String endpoint = joinPath(ROOT_ENDPOINT, id);
             endpoint = joinPath(endpoint, "gpgkeys");
@@ -282,9 +275,8 @@ public class AccountClient implements AccountApi {
      * so they can hide (or show) relevant UI actions.
      */
     public CapabilityInfo getCapabilities(String id) {
-        if (StringUtils.isEmpty(id)) {
-            id = "self";
-        }
+        id = StringUtils.isEmpty(id) ? "self" : id;
+
         try {
             String endpoint = joinPath(ROOT_ENDPOINT, id);
             endpoint = joinPath(endpoint, "capabilities");
@@ -304,9 +296,8 @@ public class AccountClient implements AccountApi {
         List<NameValuePair> list = filters.stream().map(
                 p -> new BasicNameValuePair("q", p)).collect(Collectors.toList());
 
-        if (StringUtils.isEmpty(id)) {
-            id = "self";
-        }
+        id = StringUtils.isEmpty(id) ? "self" : id;
+
         try {
             String endpoint = joinPath(ROOT_ENDPOINT, id);
             endpoint = joinPath(endpoint, "capabilities");
@@ -330,14 +321,33 @@ public class AccountClient implements AccountApi {
      * @return
      */
     public String getCapability(String id, String capabilityId) {
-        if (StringUtils.isEmpty(id)) {
-            id = "self";
-        }
+        id = StringUtils.isEmpty(id) ? "self" : id;
+
         try {
             String endpoint = joinPath(ROOT_ENDPOINT, id);
             endpoint = joinPath(endpoint, "capabilities");
             endpoint = joinPath(endpoint, capabilityId);
             return client.get(endpoint);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    /**
+     * List Groups
+     * 'GET /accounts/{account-id}/groups/'
+     * <p>
+     * Lists all groups that contain the specified user as a member.
+     */
+    public List<GroupInfo> getGroups(String id) {
+        id = StringUtils.isEmpty(id) ? "self" : id;
+
+        try {
+            String endpoint = joinPath(ROOT_ENDPOINT, id);
+            endpoint = joinPath(endpoint, "groups");
+            return client.get(endpoint, GroupInfo.class, List.class);
         } catch (IOException e) {
             e.printStackTrace();
         }

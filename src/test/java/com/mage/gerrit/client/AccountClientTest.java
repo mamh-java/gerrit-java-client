@@ -4,6 +4,7 @@ import com.mage.gerrit.model.AccountInfo;
 import com.mage.gerrit.model.AccountNameInput;
 import com.mage.gerrit.model.CapabilityInfo;
 import com.mage.gerrit.model.EmailInfo;
+import com.mage.gerrit.model.GroupInfo;
 import com.mage.gerrit.model.ListAccountsOption;
 import com.mage.gerrit.model.QueueType;
 import com.mage.gerrit.model.SshKeyInfo;
@@ -21,15 +22,13 @@ import static com.mage.gerrit.utils.Utils.pprint;
 import static org.junit.Assert.assertEquals;
 
 public class AccountClientTest {
-    private GerritHttpClient client;
     private GerritServer server;
 
 
     @Before
     public void before() throws Exception {
         URI uri = new URI("http://10.0.12.62:8080");
-        client = new GerritHttpClient(uri, "bright.ma", "vc7WPNtrB3AxteP8IoW5UBU4iyVYXcnr8JakYosw7A");
-        server = new GerritServer(client);
+        server = new GerritServer(uri);
     }
 
     /**
@@ -225,4 +224,13 @@ public class AccountClientTest {
     }
 
 
+    @Test
+    public void testGetGroups() {
+        List<GroupInfo> groups = server.getAccount().getGroups(null);
+        assertEquals(16, groups.size());
+
+        groups = server.getAccount().getGroups("");
+        assertEquals(16, groups.size());
+
+    }
 }
