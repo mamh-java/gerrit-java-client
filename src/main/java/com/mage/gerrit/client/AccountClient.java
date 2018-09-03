@@ -469,6 +469,31 @@ public class AccountClient implements AccountApi {
     }
 
     /**
+     * Get Watched Projects
+     * 'GET /accounts/{account-id}/watched.projects'
+     * <p>
+     * Retrieves all projects a user is watching.
+     * <p>
+     * Request
+     * GET /a/accounts/self/watched.projects HTTP/1.0
+     * As result the watched projects of the user are returned as a list of
+     * ProjectWatchInfo entities. The result is sorted by project name in ascending order.
+     */
+    public List<ProjectWatchInfo> getWatchedProjects(String id) {
+        id = StringUtils.isEmpty(id) ? "self" : id;
+
+        try {
+            String endpoint = joinPath(ROOT_ENDPOINT, id);
+            endpoint = joinPath(endpoint, "watched.projects");
+            return client.get(endpoint, ProjectWatchInfo.class, List.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    /**
      * Set Account Name
      * 'PUT /accounts/{account-id}/getFullName'
      * <p>

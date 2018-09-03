@@ -261,4 +261,13 @@ public class AccountClientTest {
         assertEquals("BASE16_LIGHT", info.getTheme());
         assertEquals("DEFAULT", info.getKeyMapType());
     }
+
+    @Test
+    public void testGetWatchedProjects() {
+        List<ProjectWatchInfo> list = server.getAccount().getWatchedProjects("");
+        assertEquals(2, list.size());
+
+        list = server.getAccount().getWatchedProjects("bright.ma");
+        assertEquals(2, list.size());
+    }
 }
