@@ -254,4 +254,11 @@ public class AccountClientTest {
         assertEquals(10, info.getContext());
         assertEquals("DAY_3024", info.getTheme());
     }
+
+    @Test
+    public void testGetEditPreferences() {
+        EditPreferencesInfo info = server.getAccount().getEditPreferences("");
+        assertEquals("BASE16_LIGHT", info.getTheme());
+        assertEquals("DEFAULT", info.getKeyMapType());
+    }
 }

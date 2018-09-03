@@ -1,18 +1,7 @@
 package com.mage.gerrit.client;
 
 import com.mage.gerrit.api.AccountApi;
-import com.mage.gerrit.model.AccountDetailInfo;
-import com.mage.gerrit.model.AccountInfo;
-import com.mage.gerrit.model.AccountNameInput;
-import com.mage.gerrit.model.CapabilityInfo;
-import com.mage.gerrit.model.DiffPreferencesInfo;
-import com.mage.gerrit.model.EmailInfo;
-import com.mage.gerrit.model.GpgKeyInfo;
-import com.mage.gerrit.model.GroupInfo;
-import com.mage.gerrit.model.ListAccountsOption;
-import com.mage.gerrit.model.PreferencesInfo;
-import com.mage.gerrit.model.SshKeyInfo;
-
+import com.mage.gerrit.model.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -448,6 +437,30 @@ public class AccountClient implements AccountApi {
             String endpoint = joinPath(ROOT_ENDPOINT, id);
             endpoint = joinPath(endpoint, "preferences.diff");
             return client.get(endpoint, DiffPreferencesInfo.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    /**
+     * Get Edit Preferences
+     * 'GET /accounts/{account-id}/preferences.edit'
+     * <p>
+     * Retrieves the edit preferences of a user.
+     * <p>
+     * Request
+     * GET /a/accounts/self/preferences.edit HTTP/1.0
+     * As result the edit preferences of the user are returned as a EditPreferencesInfo entity.
+     */
+    public EditPreferencesInfo getEditPreferences(String id) {
+        id = StringUtils.isEmpty(id) ? "self" : id;
+
+        try {
+            String endpoint = joinPath(ROOT_ENDPOINT, id);
+            endpoint = joinPath(endpoint, "preferences.edit");
+            return client.get(endpoint, EditPreferencesInfo.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
