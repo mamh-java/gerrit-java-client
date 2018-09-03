@@ -493,6 +493,32 @@ public class AccountClient implements AccountApi {
         return null;
     }
 
+
+    /**
+     * Get Account External IDs
+     * 'GET /accounts/{account-id}/external.ids'
+     * <p>
+     * Retrieves the external ids of a user account.
+     * <p>
+     * Request
+     * GET /a/accounts/self/external.ids HTTP/1.0
+     * As result the external ids of the user are returned as a list of AccountExternalIdInfo entities.
+     */
+    public List<AccountExternalIdInfo> getExternal(String id) {
+        id = StringUtils.isEmpty(id) ? "self" : id;
+
+        try {
+            String endpoint = joinPath(ROOT_ENDPOINT, id);
+            endpoint = joinPath(endpoint, "external.ids");
+            return client.get(endpoint, AccountExternalIdInfo.class, List.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+
+    }
+
     /**
      * Set Account Name
      * 'PUT /accounts/{account-id}/getFullName'

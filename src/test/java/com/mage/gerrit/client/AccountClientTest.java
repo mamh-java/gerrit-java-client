@@ -270,4 +270,14 @@ public class AccountClientTest {
         list = server.getAccount().getWatchedProjects("bright.ma");
         assertEquals(2, list.size());
     }
+
+    @Test
+    public void getExternal() {
+        List<AccountExternalIdInfo> external = server.getAccount().getExternal("");
+        assertEquals("gerrit:bright.ma", external.get(0).getIdentity());
+
+        external = server.getAccount().getExternal("jenkins");
+        assertEquals("mailto:jenkins@zeusis.com", external.get(0).getIdentity());
+
+    }
 }
