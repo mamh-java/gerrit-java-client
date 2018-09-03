@@ -5,6 +5,7 @@ import com.mage.gerrit.model.AccountNameInput;
 import com.mage.gerrit.model.CapabilityInfo;
 import com.mage.gerrit.model.EmailInfo;
 import com.mage.gerrit.model.ListAccountsOption;
+import com.mage.gerrit.model.QueueType;
 import com.mage.gerrit.model.SshKeyInfo;
 import com.mage.gerrit.server.GerritServer;
 
@@ -194,8 +195,7 @@ public class AccountClientTest {
     @Test
     public void testGetCapabilities() {
         CapabilityInfo capabilityInfo = server.getAccount().getCapabilities();
-        pprint(capabilityInfo);
-
+        pprint(capabilityInfo.getPriority());
 
         capabilityInfo = server.getAccount().getCapabilities("test");
         pprint(capabilityInfo);
@@ -203,14 +203,16 @@ public class AccountClientTest {
 
     @Test
     public void testGetCapabilities1() {
-        List<String> list = Stream.of("createAccount", "createGroup")
+        List<String> list = Stream.of("createAccount", "createGroup", "priority")
                 .collect(Collectors.toList());
         CapabilityInfo capabilityInfo = server.getAccount().getCapabilities("self", list);
-        pprint(capabilityInfo);
+        assertEquals(true, capabilityInfo.isCreateAccount());
+        assertEquals(true, capabilityInfo.isCreateGroup());
+        assertEquals(QueueType.INTERACTIVE, capabilityInfo.getPriority());
     }
 
     @Test
-    public void testGetCapability(){
+    public void testGetCapability() {
         String s = server.getAccount().getCapability("self", "createGroup");
         System.out.println(s);
     }

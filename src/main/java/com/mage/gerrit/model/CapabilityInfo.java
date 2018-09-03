@@ -52,7 +52,7 @@ public class CapabilityInfo extends BaseModel {
     /**
      * The name of the thread pool used by the user, see Priority capability.
      */
-    private PermissionRuleInfo.Action priority;
+    private QueueType priority;
 
     /**
      * The Query Limit of the user as QueryLimitInfo.
@@ -172,11 +172,11 @@ public class CapabilityInfo extends BaseModel {
         this.maintainServer = maintainServer;
     }
 
-    public PermissionRuleInfo.Action getPriority() {
+    public QueueType getPriority() {
         return priority;
     }
 
-    public void setPriority(PermissionRuleInfo.Action priority) {
+    public void setPriority(QueueType priority) {
         this.priority = priority;
     }
 
