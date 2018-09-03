@@ -17,14 +17,12 @@ import static com.mage.gerrit.utils.Utils.pprint;
 
 public class GerritServerTest {
 
-    private GerritHttpClient client;
     private GerritServer server;
 
     @Before
     public void before() throws Exception {
-        URI uri = new URI("http://10.0.63.21:8081");
-        client = new GerritHttpClient(uri, "bright.ma", "MteqipPO3d+kBW2PiFbaNIk8nfY2S6WDLyB81CThfg");
-        server = new GerritServer(client);
+        URI uri = new URI("http://10.0.12.62:8080");
+        server = new GerritServer(uri);
     }
 
     @After

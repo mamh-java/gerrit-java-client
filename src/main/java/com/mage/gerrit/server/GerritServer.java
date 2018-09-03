@@ -13,23 +13,27 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.mage.gerrit.utils.UrlUtils.joinPath;
 import static com.mage.gerrit.utils.UrlUtils.joinParam;
+import static com.mage.gerrit.utils.UrlUtils.joinPath;
 
 public class GerritServer {
     private GerritHttpClient client;
     private AccountClient account;
 
     public GerritServer(URI serverUri) {
-        this(new GerritHttpClient(serverUri));
+        NetRC netRC = new NetRC();
+        String username = netRC.getEntry(serverUri.getHost()).login;
+        String password  = netRC.getEntry(serverUri.getHost()).password;
+        this.client = new GerritHttpClient(serverUri, username, password);
+        this.account = new AccountClient(client);
     }
 
-    public GerritServer(URI serverUri, String username, String passwordOrToken) {
-        this(new GerritHttpClient(serverUri, username, passwordOrToken));
+    public GerritServer(URI serverUri, String username, String password) {
+        this(new GerritHttpClient(serverUri, username, password));
     }
 
-    public GerritServer(String serverUri, String username, String passwordOrToken) throws URISyntaxException {
-        this(new GerritHttpClient(serverUri, username, passwordOrToken));
+    public GerritServer(String serverUri, String username, String password) throws URISyntaxException {
+        this(new GerritHttpClient(serverUri, username, password));
     }
 
     public GerritServer(GerritHttpClient client) {
