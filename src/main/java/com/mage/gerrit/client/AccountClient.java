@@ -356,6 +356,50 @@ public class AccountClient implements AccountApi {
     }
 
     /**
+     * Get Avatar
+     * 'GET /accounts/{account-id}/avatar'
+     * <p>
+     * Retrieves the avatar image of the user.
+     * <p>
+     * With the size option (alias s) you can specify the preferred size in pixels (height and width).
+     * 这个测试中是不能获取到的。
+     */
+    public String getAvatar(String id) {
+        id = StringUtils.isEmpty(id) ? "self" : id;
+
+        try {
+            String endpoint = joinPath(ROOT_ENDPOINT, id);
+            endpoint = joinPath(endpoint, "avatar");
+            return client.get(endpoint);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    /**
+     * Get Avatar Change URL
+     * 'GET /accounts/{account-id}/avatar.change.url'
+     * <p>
+     * Retrieves the URL where the user can change the avatar image.
+     * 这个测试中是不能获取到的。
+     */
+    public String getAvatarUrl(String id) {
+        id = StringUtils.isEmpty(id) ? "self" : id;
+
+        try {
+            String endpoint = joinPath(ROOT_ENDPOINT, id);
+            endpoint = joinPath(endpoint, "avatar.change.url");
+            return client.get(endpoint);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    /**
      * Set Account Name
      * 'PUT /accounts/{account-id}/getFullName'
      * <p>

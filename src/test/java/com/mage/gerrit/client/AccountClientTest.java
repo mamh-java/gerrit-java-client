@@ -233,4 +233,16 @@ public class AccountClientTest {
         assertEquals(16, groups.size());
 
     }
+
+    @Test
+    public void testGetAvatar() {
+        String avatar = server.getAccount().getAvatar("self");
+        System.out.println(avatar);
+    }
+
+    @Test
+    public void testGetAvatarUrl() {
+        String avatar = server.getAccount().getAvatar("self");
+        System.out.println(avatar);
+    }
 }
