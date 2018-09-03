@@ -1,14 +1,6 @@
 package com.mage.gerrit.client;
 
-import com.mage.gerrit.model.AccountInfo;
-import com.mage.gerrit.model.AccountNameInput;
-import com.mage.gerrit.model.CapabilityInfo;
-import com.mage.gerrit.model.EmailInfo;
-import com.mage.gerrit.model.GroupInfo;
-import com.mage.gerrit.model.ListAccountsOption;
-import com.mage.gerrit.model.PreferencesInfo;
-import com.mage.gerrit.model.QueueType;
-import com.mage.gerrit.model.SshKeyInfo;
+import com.mage.gerrit.model.*;
 import com.mage.gerrit.server.GerritServer;
 
 import org.junit.Before;
@@ -254,5 +246,12 @@ public class AccountClientTest {
 
         info = server.getAccount().getPreferences("self");
         pprint(info);
+    }
+
+    @Test
+    public void testGetDiffPreferences() {
+        DiffPreferencesInfo info = server.getAccount().getDiffPreferences("");
+        assertEquals(10, info.getContext());
+        assertEquals("DAY_3024", info.getTheme());
     }
 }

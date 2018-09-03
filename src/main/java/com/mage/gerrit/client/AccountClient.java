@@ -5,6 +5,7 @@ import com.mage.gerrit.model.AccountDetailInfo;
 import com.mage.gerrit.model.AccountInfo;
 import com.mage.gerrit.model.AccountNameInput;
 import com.mage.gerrit.model.CapabilityInfo;
+import com.mage.gerrit.model.DiffPreferencesInfo;
 import com.mage.gerrit.model.EmailInfo;
 import com.mage.gerrit.model.GpgKeyInfo;
 import com.mage.gerrit.model.GroupInfo;
@@ -420,6 +421,33 @@ public class AccountClient implements AccountApi {
             String endpoint = joinPath(ROOT_ENDPOINT, id);
             endpoint = joinPath(endpoint, "preferences");
             return client.get(endpoint, PreferencesInfo.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    /**
+     * Get Diff Preferences
+     * 'GET /accounts/{account-id}/preferences.diff'
+     * <p>
+     * Retrieves the diff preferences of a user.
+     * <p>
+     * Request
+     * GET /a/accounts/self/preferences.diff HTTP/1.0
+     * As result the diff preferences of the user are returned as a DiffPreferencesInfo entity.
+     *
+     * @param id
+     * @return
+     */
+    public DiffPreferencesInfo getDiffPreferences(String id) {
+        id = StringUtils.isEmpty(id) ? "self" : id;
+
+        try {
+            String endpoint = joinPath(ROOT_ENDPOINT, id);
+            endpoint = joinPath(endpoint, "preferences.diff");
+            return client.get(endpoint, DiffPreferencesInfo.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
