@@ -1,10 +1,10 @@
 package com.mage.gerrit.server;
 
-import com.mage.gerrit.client.GerritHttpClient;
 import com.mage.gerrit.model.DocResult;
 import com.mage.gerrit.model.ProjectAccessInfo;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -65,5 +65,11 @@ public class GerritServerTest {
     public void searchDocumentation() {
         List<DocResult> l = server.searchDocumentation("test");
         pprint(l);
+    }
+
+    @Test
+    public void testGetVersion() {
+        String version = server.getVersion();
+        Assert.assertEquals("2.15.3", version);
     }
 }

@@ -1,5 +1,6 @@
 package com.mage.gerrit.server;
 
+import com.mage.gerrit.api.AccountApi;
 import com.mage.gerrit.client.AccountClient;
 import com.mage.gerrit.client.GerritHttpClient;
 import com.mage.gerrit.model.DocResult;
@@ -18,12 +19,12 @@ import static com.mage.gerrit.utils.UrlUtils.joinPath;
 
 public class GerritServer {
     private GerritHttpClient client;
-    private AccountClient account;
+    private AccountApi account;
 
     public GerritServer(URI serverUri) {
         NetRC netRC = new NetRC();
         String username = netRC.getEntry(serverUri.getHost()).login;
-        String password  = netRC.getEntry(serverUri.getHost()).password;
+        String password = netRC.getEntry(serverUri.getHost()).password;
         this.client = new GerritHttpClient(serverUri, username, password);
         this.account = new AccountClient(client);
     }
@@ -49,11 +50,11 @@ public class GerritServer {
         this.client = client;
     }
 
-    public AccountClient getAccount() {
+    public AccountApi getAccount() {
         return account;
     }
 
-    public void setAccount(AccountClient account) {
+    public void setAccount(AccountApi account) {
         this.account = account;
     }
 
@@ -72,6 +73,16 @@ public class GerritServer {
         return listAccess(projects);
     }
 
+    public String getVersion() {
+        try {
+            String endpoint = "/config/server/version";
+            String string = client.getString(endpoint);
+            return string;
+        } catch (IOException e) {
+
+        }
+        return null;
+    }
 
     public List<DocResult> searchDocumentation(String pattern) {
         String endpoint = "/Documentation/";
