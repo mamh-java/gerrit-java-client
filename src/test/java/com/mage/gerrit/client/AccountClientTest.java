@@ -9,6 +9,7 @@ import com.mage.gerrit.model.ContributorAgreementInfo;
 import com.mage.gerrit.model.DiffPreferencesInfo;
 import com.mage.gerrit.model.EditPreferencesInfo;
 import com.mage.gerrit.model.EmailInfo;
+import com.mage.gerrit.model.GpgKeyInfo;
 import com.mage.gerrit.model.GroupInfo;
 import com.mage.gerrit.model.ListAccountsOption;
 import com.mage.gerrit.model.PreferencesInfo;
@@ -22,6 +23,7 @@ import org.junit.Test;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -324,5 +326,12 @@ public class AccountClientTest {
     @Test
     public void testDeleteSshkey() {
         server.getAccount().deleteSshkey("self", "9");
+    }
+
+    @Test
+    public void testDeleteGpgkey() {
+        Map<String, GpgKeyInfo> gpgkeys = server.getAccount().getGpgkeys("self");
+        pprint(gpgkeys);
+        server.getAccount().deleteGpgkey("self", "sss");
     }
 }

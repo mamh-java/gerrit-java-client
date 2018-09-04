@@ -296,6 +296,30 @@ public class AccountClient implements AccountApi {
     }
 
     /**
+     * Delete GPG Key
+     * 'DELETE /accounts/{account-id}/gpgkeys/{gpg-key-id}'
+     * <p>
+     * Deletes a GPG key of a user.
+     * <p>
+     * Request
+     * DELETE /accounts/self/gpgkeys/AFC8A49B HTTP/1.0
+     */
+    public void deleteGpgkey(String id, String keyId) {
+        id = StringUtils.isEmpty(id) ? "self" : id;
+
+        try {
+            String endpoint = joinPath(ROOT_ENDPOINT, id);
+            endpoint = joinPath(endpoint, "gpgkeys");
+            endpoint = joinPath(endpoint, keyId);
+            client.delete(endpoint);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+    /**
      * List Account Capabilities
      * 'GET /accounts/{account-id}/capabilities'
      * Returns the global capabilities that are enabled for the specified user.
