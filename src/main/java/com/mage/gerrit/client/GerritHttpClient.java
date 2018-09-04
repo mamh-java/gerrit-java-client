@@ -6,6 +6,7 @@ import com.mage.gerrit.model.BaseModel;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.impl.auth.BasicScheme;
@@ -142,5 +143,17 @@ public class GerritHttpClient extends AbstractGerritHttpClient implements Gerrit
         HttpResponse response = request(path, HttpPut.METHOD_NAME, requestBody);
         byte[] bytes = getResponseBytes(response);
         return mapper.readValue(bytes, String.class);
+    }
+
+    public <E, T extends BaseModel>
+    T put(String path, E object, Class<T> cls) throws IOException {
+        String requestBody = mapper.writeValueAsString(object);
+        HttpResponse response = request(path, HttpPut.METHOD_NAME, requestBody);
+        byte[] bytes = getResponseBytes(response);
+        return mapper.readValue(bytes, cls);
+    }
+
+    public void delete(String path) throws IOException {
+        request(path, HttpDelete.METHOD_NAME, null);
     }
 }
