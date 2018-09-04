@@ -67,7 +67,7 @@ public final class UrlUtils {
         URIBuilder uriBuilder = new URIBuilder(uri);
         uriBuilder = addPath(uriBuilder, context);
         try {
-            return uriBuilder.build().normalize().resolve(path);
+            return uriBuilder.build().normalize().resolve("/").resolve(path);
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
