@@ -7,6 +7,7 @@ import com.mage.gerrit.model.AccountInfo;
 import com.mage.gerrit.model.AccountNameInput;
 import com.mage.gerrit.model.CapabilityInfo;
 import com.mage.gerrit.model.ChangeInfo;
+import com.mage.gerrit.model.ContributorAgreementInfo;
 import com.mage.gerrit.model.DiffPreferencesInfo;
 import com.mage.gerrit.model.EditPreferencesInfo;
 import com.mage.gerrit.model.EmailInfo;
@@ -609,6 +610,33 @@ public class AccountClient implements AccountApi {
             endpoint = joinPath(endpoint, "stars.changes");
             endpoint = joinPath(endpoint, changeId);
             return client.getList(endpoint);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    /**
+     * List Contributor Agreements
+     * 'GET /accounts/{account-id}/agreements'
+     * <p>
+     * Gets a list of the user’s signed contributor agreements.
+     * <p>
+     * Request
+     * GET /a/accounts/self/agreements HTTP/1.0
+     * As response the user’s signed agreements are returned as
+     * a list of ContributorAgreementInfo entities.
+     *
+     *  Method Not Allowed
+     */
+    public List<ContributorAgreementInfo> getAgreements(String id) {
+        id = StringUtils.isEmpty(id) ? "self" : id;
+
+        try {
+            String endpoint = joinPath(ROOT_ENDPOINT, id);
+            endpoint = joinPath(endpoint, "agreements");
+            return client.get(endpoint, ContributorAgreementInfo.class, List.class);
         } catch (IOException e) {
             e.printStackTrace();
         }

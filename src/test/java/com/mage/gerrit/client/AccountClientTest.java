@@ -5,6 +5,7 @@ import com.mage.gerrit.model.AccountInfo;
 import com.mage.gerrit.model.AccountNameInput;
 import com.mage.gerrit.model.CapabilityInfo;
 import com.mage.gerrit.model.ChangeInfo;
+import com.mage.gerrit.model.ContributorAgreementInfo;
 import com.mage.gerrit.model.DiffPreferencesInfo;
 import com.mage.gerrit.model.EditPreferencesInfo;
 import com.mage.gerrit.model.EmailInfo;
@@ -312,5 +313,11 @@ public class AccountClientTest {
         String changeId = l.get(0).getId();
         List<String> list = server.getAccount().getStarLabels("", changeId);
         assertEquals("star",list.get(0));
+    }
+
+    @Test
+    public void testGetAgreements() {
+        List<ContributorAgreementInfo> list = server.getAccount().getAgreements("");
+        pprint(list);
     }
 }
