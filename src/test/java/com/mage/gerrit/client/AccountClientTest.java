@@ -312,12 +312,17 @@ public class AccountClientTest {
         List<ChangeInfo> l = server.getAccount().getStarsChanges("");
         String changeId = l.get(0).getId();
         List<String> list = server.getAccount().getStarLabels("", changeId);
-        assertEquals("star",list.get(0));
+        assertEquals("star", list.get(0));
     }
 
     @Test
     public void testGetAgreements() {
         List<ContributorAgreementInfo> list = server.getAccount().getAgreements("");
         pprint(list);
+    }
+
+    @Test
+    public void testDeleteSshkey() {
+        server.getAccount().deleteSshkey("self", "9");
     }
 }

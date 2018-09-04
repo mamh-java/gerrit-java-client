@@ -202,6 +202,29 @@ public class AccountClient implements AccountApi {
     }
 
     /**
+     * Delete SSH Key
+     * 'DELETE /accounts/{account-id}/sshkeys/{ssh-key-id}'
+     * <p>
+     * Deletes an SSH key of a user.
+     * <p>
+     * Request
+     * DELETE /accounts/self/sshkeys/2 HTTP/1.0
+     */
+    public void deleteSshkey(String id, String keyId) {
+        id = StringUtils.isEmpty(id) ? "self" : id;
+
+        try {
+            String endpoint = joinPath(ROOT_ENDPOINT, id);
+            endpoint = joinPath(endpoint, "sshkeys");
+            endpoint = joinPath(endpoint, keyId);
+            client.delete(endpoint);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    /**
      * List SSH Keys
      * 'GET /accounts/{account-id}/sshkeys'
      *
