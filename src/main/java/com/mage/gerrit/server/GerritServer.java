@@ -59,13 +59,8 @@ public class GerritServer {
     }
 
     public Map<String, ProjectAccessInfo> listAccess(List<String> projects) {
-        try {
-            String endpoint = joinParam("a/access/", "project", projects);
-            return client.get(endpoint, ProjectAccessInfo.class, HashMap.class, String.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+        String endpoint = joinParam("a/access/", "project", projects);
+        return client.get(endpoint, ProjectAccessInfo.class, HashMap.class, String.class);
     }
 
     public Map<String, ProjectAccessInfo> listAccess(String... project) {
@@ -74,25 +69,15 @@ public class GerritServer {
     }
 
     public String getVersion() {
-        try {
-            String endpoint = "/config/server/version";
-            String string = client.getString(endpoint);
-            return string;
-        } catch (IOException e) {
-
-        }
-        return null;
+        String endpoint = "/config/server/version";
+        return client.getString(endpoint);
     }
 
     public List<DocResult> searchDocumentation(String pattern) {
         String endpoint = "/Documentation/";
         endpoint = joinPath(endpoint, "?q=" + pattern);
-        try {
-            return client.get(endpoint, DocResult.class, List.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+
+        return client.get(endpoint, DocResult.class, List.class);
     }
 
 }

@@ -75,9 +75,18 @@ public class GerritHttpClient extends AbstractGerritHttpClient implements Gerrit
      */
     @Override
     public <E extends BaseModel, C extends List>
-    List<E> get(String path, Class<E> elementCls, Class<C> listCls) throws IOException {
-        JavaType javaType = mapper.getTypeFactory().constructParametricType(listCls, elementCls);
-        return mapper.readValue(getRaw(path), javaType);
+    List<E> get(String path, Class<E> elementCls, Class<C> listCls) {
+        try {
+            JavaType javaType = mapper.getTypeFactory().
+                    constructParametricType(listCls, elementCls);
+            byte[] raw = getRaw(path);
+            if (raw != null) {
+                return mapper.readValue(getRaw(path), javaType);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 
@@ -85,7 +94,7 @@ public class GerritHttpClient extends AbstractGerritHttpClient implements Gerrit
      * 获取为一个map对象
      *
      * @param path
-     * @param elementCls
+     * @param eCls
      * @param mapCls
      * @param keyCls
      * @param <E>
@@ -96,9 +105,18 @@ public class GerritHttpClient extends AbstractGerritHttpClient implements Gerrit
      */
     @Override
     public <E extends BaseModel, K, M extends Map<K, E>>
-    Map<K, E> get(String path, Class<E> elementCls, Class<M> mapCls, Class<K> keyCls) throws IOException {
-        JavaType javaType = mapper.getTypeFactory().constructParametricType(mapCls, keyCls, elementCls);
-        return mapper.readValue(getRaw(path), javaType);
+    Map<K, E> get(String path, Class<E> eCls, Class<M> mapCls, Class<K> keyCls) {
+        try {
+            JavaType javaType = mapper.getTypeFactory().
+                    constructParametricType(mapCls, keyCls, eCls);
+            byte[] raw = getRaw(path);
+            if (raw != null) {
+                return mapper.readValue(raw, javaType);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 
@@ -113,47 +131,91 @@ public class GerritHttpClient extends AbstractGerritHttpClient implements Gerrit
      */
     @Override
     public <E extends BaseModel>
-    E get(String path, Class<E> cls) throws IOException {
-        return mapper.readValue(getRaw(path), cls);
+    E get(String path, Class<E> cls) {
+        try {
+            byte[] raw = getRaw(path);
+            if (raw != null) {
+                return mapper.readValue(raw, cls);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 
     @Override
-    public String getString(String path) throws IOException {
-        return mapper.readValue(getRaw(path), String.class);
+    public String getString(String path) {
+        try {
+            byte[] raw = getRaw(path);
+            if (raw != null) {
+                return mapper.readValue(raw, String.class);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override
-    public List<String> getList(String path) throws IOException {
-        JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, String.class);
-        return mapper.readValue(getRaw(path), javaType);
+    public List<String> getList(String path) {
+        try {
+            JavaType javaType = mapper.getTypeFactory().
+                    constructParametricType(List.class, String.class);
+            byte[] raw = getRaw(path);
+            if (raw != null) {
+                return mapper.readValue(raw, javaType);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override
-    public byte[] getRaw(String path) throws IOException {
-        HttpResponse response = request(path, HttpGet.METHOD_NAME, null);
-        byte[] bytes = getResponseBytes(response);
-        return bytes;
+    public byte[] getRaw(String path) {
+        try {
+            HttpResponse response = request(path, HttpGet.METHOD_NAME, null);
+            byte[] bytes = getResponseBytes(response);
+            return bytes;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 
     public <E extends BaseModel>
-    String put(String path, E object) throws IOException {
-        String requestBody = mapper.writeValueAsString(object);
-        HttpResponse response = request(path, HttpPut.METHOD_NAME, requestBody);
-        byte[] bytes = getResponseBytes(response);
-        return mapper.readValue(bytes, String.class);
+    String put(String path, E object) {
+        try {
+            String requestBody = mapper.writeValueAsString(object);
+            HttpResponse response = request(path, HttpPut.METHOD_NAME, requestBody);
+            byte[] bytes = getResponseBytes(response);
+            return mapper.readValue(bytes, String.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public <E, T extends BaseModel>
-    T put(String path, E object, Class<T> cls) throws IOException {
-        String requestBody = mapper.writeValueAsString(object);
-        HttpResponse response = request(path, HttpPut.METHOD_NAME, requestBody);
-        byte[] bytes = getResponseBytes(response);
-        return mapper.readValue(bytes, cls);
+    T put(String path, E object, Class<T> cls) {
+        try {
+            String requestBody = mapper.writeValueAsString(object);
+            HttpResponse response = request(path, HttpPut.METHOD_NAME, requestBody);
+            byte[] bytes = getResponseBytes(response);
+            return mapper.readValue(bytes, cls);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
-    public void delete(String path) throws IOException {
-        request(path, HttpDelete.METHOD_NAME, null);
+    public void delete(String path) {
+        try {
+            request(path, HttpDelete.METHOD_NAME, null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

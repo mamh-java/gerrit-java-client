@@ -22,7 +22,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -61,18 +60,13 @@ public class AccountClient implements AccountApi {
         if (StringUtils.isEmpty(username)) {
             return null;
         }
-        try {
-            String endpoint = joinPath(ROOT_ENDPOINT, username);
-            if (withDetail) {
-                endpoint = joinPath(endpoint, "detail");
-                return client.get(endpoint, AccountDetailInfo.class);
-            } else {
-                return client.get(endpoint, AccountInfo.class);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        String endpoint = joinPath(ROOT_ENDPOINT, username);
+        if (withDetail) {
+            endpoint = joinPath(endpoint, "detail");
+            return client.get(endpoint, AccountDetailInfo.class);
+        } else {
+            return client.get(endpoint, AccountInfo.class);
         }
-        return null;
     }
 
     @Override
@@ -83,15 +77,9 @@ public class AccountClient implements AccountApi {
     private String getString(String id, String name) {
         id = StringUtils.isEmpty(id) ? "self" : id;
 
-        try {
-            String endpoint = joinPath(ROOT_ENDPOINT, id);
-            endpoint = joinPath(endpoint, name);
-            return client.getString(endpoint);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return null;
+        String endpoint = joinPath(ROOT_ENDPOINT, id);
+        endpoint = joinPath(endpoint, name);
+        return client.getString(endpoint);
     }
 
     /**
@@ -167,17 +155,12 @@ public class AccountClient implements AccountApi {
     public List<EmailInfo> getEmails(String id, String emailId) {
         id = StringUtils.isEmpty(id) ? "self" : id;
 
-        try {
-            String endpoint = joinPath(ROOT_ENDPOINT, id);
-            endpoint = joinPath(endpoint, "emails");
-            if (StringUtils.isNotEmpty(emailId))
-                endpoint = joinPath(endpoint, emailId);
-            return client.get(endpoint, EmailInfo.class, List.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        String endpoint = joinPath(ROOT_ENDPOINT, id);
+        endpoint = joinPath(endpoint, "emails");
+        if (StringUtils.isNotEmpty(emailId))
+            endpoint = joinPath(endpoint, emailId);
+        return client.get(endpoint, EmailInfo.class, List.class);
 
-        return null;
     }
 
     @Override
@@ -202,16 +185,11 @@ public class AccountClient implements AccountApi {
     public SshKeyInfo getSshKey(String id, String keyId) {
         id = StringUtils.isEmpty(id) ? "self" : id;
 
-        try {
-            String endpoint = joinPath(ROOT_ENDPOINT, id);
-            endpoint = joinPath(endpoint, "sshkeys");
-            endpoint = joinPath(endpoint, keyId);
-            return client.get(endpoint, SshKeyInfo.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        String endpoint = joinPath(ROOT_ENDPOINT, id);
+        endpoint = joinPath(endpoint, "sshkeys");
+        endpoint = joinPath(endpoint, keyId);
+        return client.get(endpoint, SshKeyInfo.class);
 
-        return null;
     }
 
     /**
@@ -227,15 +205,10 @@ public class AccountClient implements AccountApi {
     public void deleteSshkey(String id, String keyId) {
         id = StringUtils.isEmpty(id) ? "self" : id;
 
-        try {
-            String endpoint = joinPath(ROOT_ENDPOINT, id);
-            endpoint = joinPath(endpoint, "sshkeys");
-            endpoint = joinPath(endpoint, keyId);
-            client.delete(endpoint);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+        String endpoint = joinPath(ROOT_ENDPOINT, id);
+        endpoint = joinPath(endpoint, "sshkeys");
+        endpoint = joinPath(endpoint, keyId);
+        client.delete(endpoint);
     }
 
     /**
@@ -249,15 +222,9 @@ public class AccountClient implements AccountApi {
     public List<SshKeyInfo> getSshKeys(String id) {
         id = StringUtils.isEmpty(id) ? "self" : id;
 
-        try {
-            String endpoint = joinPath(ROOT_ENDPOINT, id);
-            endpoint = joinPath(endpoint, "sshkeys");
-            return client.get(endpoint, SshKeyInfo.class, List.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return null;
+        String endpoint = joinPath(ROOT_ENDPOINT, id);
+        endpoint = joinPath(endpoint, "sshkeys");
+        return client.get(endpoint, SshKeyInfo.class, List.class);
     }
 
     @Override
@@ -277,15 +244,9 @@ public class AccountClient implements AccountApi {
     public Map<String, GpgKeyInfo> getGpgkeys(String id) {
         id = StringUtils.isEmpty(id) ? "self" : id;
 
-        try {
-            String endpoint = joinPath(ROOT_ENDPOINT, id);
-            endpoint = joinPath(endpoint, "gpgkeys");
-            return client.get(endpoint, GpgKeyInfo.class, Map.class, String.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return null;
+        String endpoint = joinPath(ROOT_ENDPOINT, id);
+        endpoint = joinPath(endpoint, "gpgkeys");
+        return client.get(endpoint, GpgKeyInfo.class, Map.class, String.class);
     }
 
     /**
@@ -301,16 +262,10 @@ public class AccountClient implements AccountApi {
     public GpgKeyInfo getGpgkey(String id, String keyId) {
         id = StringUtils.isEmpty(id) ? "self" : id;
 
-        try {
-            String endpoint = joinPath(ROOT_ENDPOINT, id);
-            endpoint = joinPath(endpoint, "gpgkeys");
-            endpoint = joinPath(endpoint, keyId);
-            return client.get(endpoint, GpgKeyInfo.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return null;
+        String endpoint = joinPath(ROOT_ENDPOINT, id);
+        endpoint = joinPath(endpoint, "gpgkeys");
+        endpoint = joinPath(endpoint, keyId);
+        return client.get(endpoint, GpgKeyInfo.class);
     }
 
     /**
@@ -326,15 +281,10 @@ public class AccountClient implements AccountApi {
     public void deleteGpgkey(String id, String keyId) {
         id = StringUtils.isEmpty(id) ? "self" : id;
 
-        try {
-            String endpoint = joinPath(ROOT_ENDPOINT, id);
-            endpoint = joinPath(endpoint, "gpgkeys");
-            endpoint = joinPath(endpoint, keyId);
-            client.delete(endpoint);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+        String endpoint = joinPath(ROOT_ENDPOINT, id);
+        endpoint = joinPath(endpoint, "gpgkeys");
+        endpoint = joinPath(endpoint, keyId);
+        client.delete(endpoint);
     }
 
 
@@ -351,15 +301,9 @@ public class AccountClient implements AccountApi {
     public CapabilityInfo getCapabilities(String id) {
         id = StringUtils.isEmpty(id) ? "self" : id;
 
-        try {
-            String endpoint = joinPath(ROOT_ENDPOINT, id);
-            endpoint = joinPath(endpoint, "capabilities");
-            return client.get(endpoint, CapabilityInfo.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return null;
+        String endpoint = joinPath(ROOT_ENDPOINT, id);
+        endpoint = joinPath(endpoint, "capabilities");
+        return client.get(endpoint, CapabilityInfo.class);
     }
 
     @Override
@@ -374,16 +318,10 @@ public class AccountClient implements AccountApi {
 
         id = StringUtils.isEmpty(id) ? "self" : id;
 
-        try {
-            String endpoint = joinPath(ROOT_ENDPOINT, id);
-            endpoint = joinPath(endpoint, "capabilities");
-            endpoint = joinParam(endpoint, list);
-            return client.get(endpoint, CapabilityInfo.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return null;
+        String endpoint = joinPath(ROOT_ENDPOINT, id);
+        endpoint = joinPath(endpoint, "capabilities");
+        endpoint = joinParam(endpoint, list);
+        return client.get(endpoint, CapabilityInfo.class);
     }
 
 
@@ -400,16 +338,10 @@ public class AccountClient implements AccountApi {
     public String getCapability(String id, String capabilityId) {
         id = StringUtils.isEmpty(id) ? "self" : id;
 
-        try {
-            String endpoint = joinPath(ROOT_ENDPOINT, id);
-            endpoint = joinPath(endpoint, "capabilities");
-            endpoint = joinPath(endpoint, capabilityId);
-            return client.getString(endpoint);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return null;
+        String endpoint = joinPath(ROOT_ENDPOINT, id);
+        endpoint = joinPath(endpoint, "capabilities");
+        endpoint = joinPath(endpoint, capabilityId);
+        return client.getString(endpoint);
     }
 
     /**
@@ -422,15 +354,9 @@ public class AccountClient implements AccountApi {
     public List<GroupInfo> getGroups(String id) {
         id = StringUtils.isEmpty(id) ? "self" : id;
 
-        try {
-            String endpoint = joinPath(ROOT_ENDPOINT, id);
-            endpoint = joinPath(endpoint, "groups");
-            return client.get(endpoint, GroupInfo.class, List.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return null;
+        String endpoint = joinPath(ROOT_ENDPOINT, id);
+        endpoint = joinPath(endpoint, "groups");
+        return client.get(endpoint, GroupInfo.class, List.class);
     }
 
     /**
@@ -446,15 +372,9 @@ public class AccountClient implements AccountApi {
     public String getAvatar(String id) {
         id = StringUtils.isEmpty(id) ? "self" : id;
 
-        try {
-            String endpoint = joinPath(ROOT_ENDPOINT, id);
-            endpoint = joinPath(endpoint, "avatar");
-            return client.getString(endpoint);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return null;
+        String endpoint = joinPath(ROOT_ENDPOINT, id);
+        endpoint = joinPath(endpoint, "avatar");
+        return client.getString(endpoint);
     }
 
     /**
@@ -486,15 +406,9 @@ public class AccountClient implements AccountApi {
     public PreferencesInfo getPreferences(String id) {
         id = StringUtils.isEmpty(id) ? "self" : id;
 
-        try {
-            String endpoint = joinPath(ROOT_ENDPOINT, id);
-            endpoint = joinPath(endpoint, "preferences");
-            return client.get(endpoint, PreferencesInfo.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return null;
+        String endpoint = joinPath(ROOT_ENDPOINT, id);
+        endpoint = joinPath(endpoint, "preferences");
+        return client.get(endpoint, PreferencesInfo.class);
     }
 
     /**
@@ -514,15 +428,9 @@ public class AccountClient implements AccountApi {
     public DiffPreferencesInfo getDiffPreferences(String id) {
         id = StringUtils.isEmpty(id) ? "self" : id;
 
-        try {
-            String endpoint = joinPath(ROOT_ENDPOINT, id);
-            endpoint = joinPath(endpoint, "preferences.diff");
-            return client.get(endpoint, DiffPreferencesInfo.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return null;
+        String endpoint = joinPath(ROOT_ENDPOINT, id);
+        endpoint = joinPath(endpoint, "preferences.diff");
+        return client.get(endpoint, DiffPreferencesInfo.class);
     }
 
     /**
@@ -539,15 +447,9 @@ public class AccountClient implements AccountApi {
     public EditPreferencesInfo getEditPreferences(String id) {
         id = StringUtils.isEmpty(id) ? "self" : id;
 
-        try {
-            String endpoint = joinPath(ROOT_ENDPOINT, id);
-            endpoint = joinPath(endpoint, "preferences.edit");
-            return client.get(endpoint, EditPreferencesInfo.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return null;
+        String endpoint = joinPath(ROOT_ENDPOINT, id);
+        endpoint = joinPath(endpoint, "preferences.edit");
+        return client.get(endpoint, EditPreferencesInfo.class);
     }
 
     /**
@@ -565,15 +467,9 @@ public class AccountClient implements AccountApi {
     public List<ProjectWatchInfo> getWatchedProjects(String id) {
         id = StringUtils.isEmpty(id) ? "self" : id;
 
-        try {
-            String endpoint = joinPath(ROOT_ENDPOINT, id);
-            endpoint = joinPath(endpoint, "watched.projects");
-            return client.get(endpoint, ProjectWatchInfo.class, List.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return null;
+        String endpoint = joinPath(ROOT_ENDPOINT, id);
+        endpoint = joinPath(endpoint, "watched.projects");
+        return client.get(endpoint, ProjectWatchInfo.class, List.class);
     }
 
 
@@ -591,16 +487,9 @@ public class AccountClient implements AccountApi {
     public List<AccountExternalIdInfo> getExternal(String id) {
         id = StringUtils.isEmpty(id) ? "self" : id;
 
-        try {
-            String endpoint = joinPath(ROOT_ENDPOINT, id);
-            endpoint = joinPath(endpoint, "external.ids");
-            return client.get(endpoint, AccountExternalIdInfo.class, List.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-
+        String endpoint = joinPath(ROOT_ENDPOINT, id);
+        endpoint = joinPath(endpoint, "external.ids");
+        return client.get(endpoint, AccountExternalIdInfo.class, List.class);
     }
 
     /**
@@ -618,17 +507,9 @@ public class AccountClient implements AccountApi {
     public List<ChangeInfo> getStarredChanges(String id) {
         id = StringUtils.isEmpty(id) ? "self" : id;
 
-        try {
-            String endpoint = joinPath(ROOT_ENDPOINT, id);
-            endpoint = joinPath(endpoint, "starred.changes");
-            return client.get(endpoint, ChangeInfo.class, List.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-
-
+        String endpoint = joinPath(ROOT_ENDPOINT, id);
+        endpoint = joinPath(endpoint, "starred.changes");
+        return client.get(endpoint, ChangeInfo.class, List.class);
     }
 
     /**
@@ -649,16 +530,9 @@ public class AccountClient implements AccountApi {
     public List<ChangeInfo> getStarsChanges(String id) {
         id = StringUtils.isEmpty(id) ? "self" : id;
 
-        try {
-            String endpoint = joinPath(ROOT_ENDPOINT, id);
-            endpoint = joinPath(endpoint, "stars.changes");
-            return client.get(endpoint, ChangeInfo.class, List.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-
+        String endpoint = joinPath(ROOT_ENDPOINT, id);
+        endpoint = joinPath(endpoint, "stars.changes");
+        return client.get(endpoint, ChangeInfo.class, List.class);
     }
 
     /**
@@ -676,16 +550,10 @@ public class AccountClient implements AccountApi {
     public List<String> getStarLabels(String id, String changeId) {
         id = StringUtils.isEmpty(id) ? "self" : id;
 
-        try {
-            String endpoint = joinPath(ROOT_ENDPOINT, id);
-            endpoint = joinPath(endpoint, "stars.changes");
-            endpoint = joinPath(endpoint, changeId);
-            return client.getList(endpoint);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return null;
+        String endpoint = joinPath(ROOT_ENDPOINT, id);
+        endpoint = joinPath(endpoint, "stars.changes");
+        endpoint = joinPath(endpoint, changeId);
+        return client.getList(endpoint);
     }
 
     /**
@@ -705,15 +573,9 @@ public class AccountClient implements AccountApi {
     public List<ContributorAgreementInfo> getAgreements(String id) {
         id = StringUtils.isEmpty(id) ? "self" : id;
 
-        try {
-            String endpoint = joinPath(ROOT_ENDPOINT, id);
-            endpoint = joinPath(endpoint, "agreements");
-            return client.get(endpoint, ContributorAgreementInfo.class, List.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return null;
+        String endpoint = joinPath(ROOT_ENDPOINT, id);
+        endpoint = joinPath(endpoint, "agreements");
+        return client.get(endpoint, ContributorAgreementInfo.class, List.class);
     }
 
     /**
@@ -734,13 +596,7 @@ public class AccountClient implements AccountApi {
     public String setFullName(String id, AccountNameInput account) {
         String endpoint = joinPath(ROOT_ENDPOINT, id);
         endpoint = joinPath(endpoint, "name");
-        try {
-            return client.put(endpoint, account);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return null;
+        return client.put(endpoint, account);
     }
 
     @Override
@@ -791,26 +647,21 @@ public class AccountClient implements AccountApi {
      */
     @Override
     public List<AccountInfo> query(String query, String limit, boolean isSuggest, ListAccountsOption option) {
-        try {
-            List<NameValuePair> list = new ArrayList<>();
-            if (isSuggest) {//如果是suggest搜索就加上这个 suggest 参数
-                list.add(new BasicNameValuePair("suggest", null));
-            }
-
-            list.add(new BasicNameValuePair("q", query));
-
-            if (StringUtils.isNotEmpty(limit) && StringUtils.isNumeric(limit)) {
-                list.add(new BasicNameValuePair("n", limit));//默认是10个
-            }
-            if (option != null) {
-                list.add(new BasicNameValuePair("o", option.toString()));
-            }
-            String endpoint = joinParam(ROOT_ENDPOINT, list);
-            return client.get(endpoint, AccountInfo.class, List.class);
-        } catch (IOException e) {
-            e.printStackTrace();
+        List<NameValuePair> list = new ArrayList<>();
+        if (isSuggest) {//如果是suggest搜索就加上这个 suggest 参数
+            list.add(new BasicNameValuePair("suggest", null));
         }
-        return null;
+
+        list.add(new BasicNameValuePair("q", query));
+
+        if (StringUtils.isNotEmpty(limit) && StringUtils.isNumeric(limit)) {
+            list.add(new BasicNameValuePair("n", limit));//默认是10个
+        }
+        if (option != null) {
+            list.add(new BasicNameValuePair("o", option.toString()));
+        }
+        String endpoint = joinParam(ROOT_ENDPOINT, list);
+        return client.get(endpoint, AccountInfo.class, List.class);
     }
 
 
