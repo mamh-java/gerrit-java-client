@@ -46,6 +46,7 @@ public class AccountClient implements AccountApi {
      *
      * @return
      */
+    @Override
     public AccountInfo get() {
         return get("self", false);
     }
@@ -99,15 +100,18 @@ public class AccountClient implements AccountApi {
      *
      * @return
      */
+    @Override
     public String getFullName(String id) {
         return getString(id, "name");
     }
 
 
+    @Override
     public String getFullName() {
         return getFullName("self");
     }
 
+    @Override
     public String getUserName() {
         return getUserName("self");
     }
@@ -119,6 +123,7 @@ public class AccountClient implements AccountApi {
      * @param id
      * @return
      */
+    @Override
     public String getUserName(String id) {
         return getString(id, "username");
     }
@@ -130,10 +135,12 @@ public class AccountClient implements AccountApi {
      * @param id
      * @return
      */
+    @Override
     public String getActive(String id) {
         return getString(id, "active");
     }
 
+    @Override
     public String getActive() {
         return getActive("self");
     }
@@ -146,14 +153,17 @@ public class AccountClient implements AccountApi {
      * @param id
      * @return
      */
+    @Override
     public String getHttpPasswd(String id) {
         return getString(id, "password.http");
     }
 
+    @Override
     public String getHttpPasswd() {
         return getHttpPasswd("self");
     }
 
+    @Override
     public List<EmailInfo> getEmails(String id, String emailId) {
         id = StringUtils.isEmpty(id) ? "self" : id;
 
@@ -170,10 +180,12 @@ public class AccountClient implements AccountApi {
         return null;
     }
 
+    @Override
     public List<EmailInfo> getEmails(String id) {
         return getEmails(id, null);
     }
 
+    @Override
     public List<EmailInfo> getEmails() {
         return getEmails("self", null);
     }
@@ -186,6 +198,7 @@ public class AccountClient implements AccountApi {
      * @param keyId
      * @return
      */
+    @Override
     public SshKeyInfo getSshKey(String id, String keyId) {
         id = StringUtils.isEmpty(id) ? "self" : id;
 
@@ -210,6 +223,7 @@ public class AccountClient implements AccountApi {
      * Request
      * DELETE /accounts/self/sshkeys/2 HTTP/1.0
      */
+    @Override
     public void deleteSshkey(String id, String keyId) {
         id = StringUtils.isEmpty(id) ? "self" : id;
 
@@ -231,6 +245,7 @@ public class AccountClient implements AccountApi {
      * @param id
      * @return
      */
+    @Override
     public List<SshKeyInfo> getSshKeys(String id) {
         id = StringUtils.isEmpty(id) ? "self" : id;
 
@@ -245,6 +260,7 @@ public class AccountClient implements AccountApi {
         return null;
     }
 
+    @Override
     public List<SshKeyInfo> getSshKeys() {
         return getSshKeys("self");
     }
@@ -257,6 +273,7 @@ public class AccountClient implements AccountApi {
      * @param id
      * @return
      */
+    @Override
     public Map<String, GpgKeyInfo> getGpgkeys(String id) {
         id = StringUtils.isEmpty(id) ? "self" : id;
 
@@ -280,6 +297,7 @@ public class AccountClient implements AccountApi {
      * @param keyId
      * @return
      */
+    @Override
     public GpgKeyInfo getGpgkey(String id, String keyId) {
         id = StringUtils.isEmpty(id) ? "self" : id;
 
@@ -304,6 +322,7 @@ public class AccountClient implements AccountApi {
      * Request
      * DELETE /accounts/self/gpgkeys/AFC8A49B HTTP/1.0
      */
+    @Override
     public void deleteGpgkey(String id, String keyId) {
         id = StringUtils.isEmpty(id) ? "self" : id;
 
@@ -328,6 +347,7 @@ public class AccountClient implements AccountApi {
      * This can be used by UI tools to discover if administrative features are available to the caller,
      * so they can hide (or show) relevant UI actions.
      */
+    @Override
     public CapabilityInfo getCapabilities(String id) {
         id = StringUtils.isEmpty(id) ? "self" : id;
 
@@ -342,10 +362,12 @@ public class AccountClient implements AccountApi {
         return null;
     }
 
+    @Override
     public CapabilityInfo getCapabilities() {
         return getCapabilities("self");
     }
 
+    @Override
     public CapabilityInfo getCapabilities(String id, List<String> filters) {
         List<NameValuePair> list = filters.stream().map(
                 p -> new BasicNameValuePair("q", p)).collect(Collectors.toList());
@@ -374,6 +396,7 @@ public class AccountClient implements AccountApi {
      * @param capabilityId
      * @return
      */
+    @Override
     public String getCapability(String id, String capabilityId) {
         id = StringUtils.isEmpty(id) ? "self" : id;
 
@@ -395,6 +418,7 @@ public class AccountClient implements AccountApi {
      * <p>
      * Lists all groups that contain the specified user as a member.
      */
+    @Override
     public List<GroupInfo> getGroups(String id) {
         id = StringUtils.isEmpty(id) ? "self" : id;
 
@@ -418,6 +442,7 @@ public class AccountClient implements AccountApi {
      * With the size option (alias s) you can specify the preferred size in pixels (height and width).
      * 这个测试中是不能获取到的。
      */
+    @Override
     public String getAvatar(String id) {
         id = StringUtils.isEmpty(id) ? "self" : id;
 
@@ -439,6 +464,7 @@ public class AccountClient implements AccountApi {
      * Retrieves the URL where the user can change the avatar image.
      * 这个测试中是不能获取到的。
      */
+    @Override
     public String getAvatarUrl(String id) {
         return getString(id, "avatar.change.url");
     }
@@ -456,6 +482,7 @@ public class AccountClient implements AccountApi {
      * granted the ModifyAccount capability, in which case they can retrieve
      * the preferences for any account.
      */
+    @Override
     public PreferencesInfo getPreferences(String id) {
         id = StringUtils.isEmpty(id) ? "self" : id;
 
@@ -483,6 +510,7 @@ public class AccountClient implements AccountApi {
      * @param id
      * @return
      */
+    @Override
     public DiffPreferencesInfo getDiffPreferences(String id) {
         id = StringUtils.isEmpty(id) ? "self" : id;
 
@@ -507,6 +535,7 @@ public class AccountClient implements AccountApi {
      * GET /a/accounts/self/preferences.edit HTTP/1.0
      * As result the edit preferences of the user are returned as a EditPreferencesInfo entity.
      */
+    @Override
     public EditPreferencesInfo getEditPreferences(String id) {
         id = StringUtils.isEmpty(id) ? "self" : id;
 
@@ -532,6 +561,7 @@ public class AccountClient implements AccountApi {
      * As result the watched projects of the user are returned as a list of
      * ProjectWatchInfo entities. The result is sorted by project name in ascending order.
      */
+    @Override
     public List<ProjectWatchInfo> getWatchedProjects(String id) {
         id = StringUtils.isEmpty(id) ? "self" : id;
 
@@ -557,6 +587,7 @@ public class AccountClient implements AccountApi {
      * GET /a/accounts/self/external.ids HTTP/1.0
      * As result the external ids of the user are returned as a list of AccountExternalIdInfo entities.
      */
+    @Override
     public List<AccountExternalIdInfo> getExternal(String id) {
         id = StringUtils.isEmpty(id) ? "self" : id;
 
@@ -583,6 +614,7 @@ public class AccountClient implements AccountApi {
      * Request
      * GET /a/accounts/self/starred.changes
      */
+    @Override
     public List<ChangeInfo> getStarredChanges(String id) {
         id = StringUtils.isEmpty(id) ? "self" : id;
 
@@ -613,6 +645,7 @@ public class AccountClient implements AccountApi {
      * @param id
      * @return
      */
+    @Override
     public List<ChangeInfo> getStarsChanges(String id) {
         id = StringUtils.isEmpty(id) ? "self" : id;
 
@@ -639,6 +672,7 @@ public class AccountClient implements AccountApi {
      * As response the star labels that the user applied on the change are returned.
      * The labels are lexicographically sorted.
      */
+    @Override
     public List<String> getStarLabels(String id, String changeId) {
         id = StringUtils.isEmpty(id) ? "self" : id;
 
@@ -667,6 +701,7 @@ public class AccountClient implements AccountApi {
      * <p>
      * Method Not Allowed
      */
+    @Override
     public List<ContributorAgreementInfo> getAgreements(String id) {
         id = StringUtils.isEmpty(id) ? "self" : id;
 
@@ -695,6 +730,7 @@ public class AccountClient implements AccountApi {
      * @param id
      * @return
      */
+    @Override
     public String setFullName(String id, AccountNameInput account) {
         String endpoint = joinPath(ROOT_ENDPOINT, id);
         endpoint = joinPath(endpoint, "name");
@@ -707,6 +743,7 @@ public class AccountClient implements AccountApi {
         return null;
     }
 
+    @Override
     public String setFullName(AccountNameInput account) {
         return setFullName("self", account);
     }
@@ -717,7 +754,8 @@ public class AccountClient implements AccountApi {
      * @param query
      * @return
      */
-    List<AccountInfo> query(String query) {
+    @Override
+    public List<AccountInfo> query(String query) {
         return query(query, null, false, null);
     }
 
@@ -728,7 +766,8 @@ public class AccountClient implements AccountApi {
      * @param limit
      * @return
      */
-    List<AccountInfo> query(String query, String limit) {
+    @Override
+    public List<AccountInfo> query(String query, String limit) {
         return query(query, limit, false, null);
     }
 
@@ -739,7 +778,8 @@ public class AccountClient implements AccountApi {
      * @param limit
      * @return
      */
-    List<AccountInfo> suggest(String query, String limit) {
+    @Override
+    public List<AccountInfo> suggest(String query, String limit) {
         return query(query, limit, true, null);
     }
 
@@ -749,7 +789,8 @@ public class AccountClient implements AccountApi {
      * @param query
      * @return
      */
-    List<AccountInfo> query(String query, String limit, boolean isSuggest, ListAccountsOption option) {
+    @Override
+    public List<AccountInfo> query(String query, String limit, boolean isSuggest, ListAccountsOption option) {
         try {
             List<NameValuePair> list = new ArrayList<>();
             if (isSuggest) {//如果是suggest搜索就加上这个 suggest 参数
