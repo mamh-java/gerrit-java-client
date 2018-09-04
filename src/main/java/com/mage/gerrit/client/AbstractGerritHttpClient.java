@@ -137,14 +137,20 @@ public abstract class AbstractGerritHttpClient implements
 
     protected void checkResponse(HttpResponse response) throws HttpResponseException {
         int status = response.getStatusLine().getStatusCode();
+
         if (status < 200 || status >= 400) {
             throw new HttpResponseException(status, response.getStatusLine().getReasonPhrase());
+        }
+
+        if (status == 204) {
+            return;
         }
         HttpEntity entity = response.getEntity();
 
         if (entity == null) {
             throw new HttpResponseException(status, response.getStatusLine().getReasonPhrase());
         }
+
         Header contentType = entity.getContentType();
         if (contentType != null && !contentType.getValue().contains(JSON_MIME_TYPE)) {
             throw new HttpResponseException(status, String.format("Expected JSON but got '%s'.", contentType.getValue()));
