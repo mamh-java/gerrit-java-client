@@ -85,7 +85,7 @@ public class AccountClient implements AccountApi {
         try {
             String endpoint = joinPath(ROOT_ENDPOINT, id);
             endpoint = joinPath(endpoint, name);
-            return client.get(endpoint);
+            return client.getString(endpoint);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -334,7 +334,7 @@ public class AccountClient implements AccountApi {
             String endpoint = joinPath(ROOT_ENDPOINT, id);
             endpoint = joinPath(endpoint, "capabilities");
             endpoint = joinPath(endpoint, capabilityId);
-            return client.get(endpoint);
+            return client.getString(endpoint);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -377,7 +377,7 @@ public class AccountClient implements AccountApi {
         try {
             String endpoint = joinPath(ROOT_ENDPOINT, id);
             endpoint = joinPath(endpoint, "avatar");
-            return client.get(endpoint);
+            return client.getString(endpoint);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -393,17 +393,7 @@ public class AccountClient implements AccountApi {
      * 这个测试中是不能获取到的。
      */
     public String getAvatarUrl(String id) {
-        id = StringUtils.isEmpty(id) ? "self" : id;
-
-        try {
-            String endpoint = joinPath(ROOT_ENDPOINT, id);
-            endpoint = joinPath(endpoint, "avatar.change.url");
-            return client.get(endpoint);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return null;
+        return getString(id, "avatar.change.url");
     }
 
     /**
@@ -627,8 +617,8 @@ public class AccountClient implements AccountApi {
      * GET /a/accounts/self/agreements HTTP/1.0
      * As response the user’s signed agreements are returned as
      * a list of ContributorAgreementInfo entities.
-     *
-     *  Method Not Allowed
+     * <p>
+     * Method Not Allowed
      */
     public List<ContributorAgreementInfo> getAgreements(String id) {
         id = StringUtils.isEmpty(id) ? "self" : id;

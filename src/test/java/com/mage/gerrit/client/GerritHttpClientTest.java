@@ -51,7 +51,7 @@ public class GerritHttpClientTest {
      */
     @Test
     public void testGet2() throws Exception {
-        String o = client.get("a/accounts/bright.ma/name");
+        String o = client.getString("a/accounts/bright.ma/name");
         pprint(o);
     }
 
@@ -60,7 +60,8 @@ public class GerritHttpClientTest {
      */
     @Test
     public void testGet3() throws Exception {
-        String o = client.get("a/accounts/bright.ma/username", true);
+        byte[] bytes = client.getRaw("a/accounts/bright.ma/username");
+        String o = new String(bytes);
         pprint(o);
     }
 

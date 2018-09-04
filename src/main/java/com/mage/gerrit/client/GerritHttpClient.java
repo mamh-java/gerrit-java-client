@@ -75,10 +75,8 @@ public class GerritHttpClient extends AbstractGerritHttpClient implements Gerrit
     @Override
     public <E extends BaseModel, C extends List>
     List<E> get(String path, Class<E> elementCls, Class<C> listCls) throws IOException {
-        HttpResponse response = request(path, HttpGet.METHOD_NAME, null);
-        byte[] bytes = getResponseBytes(response);
         JavaType javaType = mapper.getTypeFactory().constructParametricType(listCls, elementCls);
-        return mapper.readValue(bytes, javaType);
+        return mapper.readValue(getRaw(path), javaType);
     }
 
 
@@ -98,10 +96,8 @@ public class GerritHttpClient extends AbstractGerritHttpClient implements Gerrit
     @Override
     public <E extends BaseModel, K, M extends Map<K, E>>
     Map<K, E> get(String path, Class<E> elementCls, Class<M> mapCls, Class<K> keyCls) throws IOException {
-        HttpResponse response = request(path, HttpGet.METHOD_NAME, null);
-        byte[] bytes = getResponseBytes(response);
         JavaType javaType = mapper.getTypeFactory().constructParametricType(mapCls, keyCls, elementCls);
-        return mapper.readValue(bytes, javaType);
+        return mapper.readValue(getRaw(path), javaType);
     }
 
 
@@ -117,35 +113,26 @@ public class GerritHttpClient extends AbstractGerritHttpClient implements Gerrit
     @Override
     public <E extends BaseModel>
     E get(String path, Class<E> cls) throws IOException {
-        HttpResponse response = request(path, HttpGet.METHOD_NAME, null);
-        byte[] bytes = getResponseBytes(response);
-        return mapper.readValue(bytes, cls);
+        return mapper.readValue(getRaw(path), cls);
     }
 
 
     @Override
-    public String get(String path) throws IOException {
-        HttpResponse response = request(path, HttpGet.METHOD_NAME, null);
-        byte[] bytes = getResponseBytes(response);
-        return mapper.readValue(bytes, String.class);
+    public String getString(String path) throws IOException {
+        return mapper.readValue(getRaw(path), String.class);
     }
 
-    List<String> getList(String path) throws IOException {
-        HttpResponse response = request(path, HttpGet.METHOD_NAME, null);
-        byte[] bytes = getResponseBytes(response);
+    @Override
+    public List<String> getList(String path) throws IOException {
         JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, String.class);
-        return mapper.readValue(bytes, javaType);
+        return mapper.readValue(getRaw(path), javaType);
     }
 
     @Override
-    public String get(String path, boolean raw) throws IOException {
+    public byte[] getRaw(String path) throws IOException {
         HttpResponse response = request(path, HttpGet.METHOD_NAME, null);
         byte[] bytes = getResponseBytes(response);
-        if (raw) {
-            return new String(bytes);
-        } else {
-            return mapper.readValue(bytes, String.class);//解析响应体内容,这个是获取字符串内容的。一般json体是一个单个值
-        }
+        return bytes;
     }
 
 

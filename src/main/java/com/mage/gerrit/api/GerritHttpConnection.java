@@ -51,6 +51,12 @@ public interface GerritHttpConnection extends Closeable {
     <E extends BaseModel>
     E get(String path, Class<E> cls) throws IOException;
 
+
+    List<String> getList(String path) throws IOException;
+
+    byte[] getRaw(String path) throws IOException;
+
+
     /**
      * 获取单个字符串值的
      *
@@ -58,7 +64,6 @@ public interface GerritHttpConnection extends Closeable {
      * @return
      * @throws IOException
      */
-    String get(String path) throws IOException;
+    String getString(String path) throws IOException;
 
-    String get(String path, boolean raw) throws IOException;
 }
