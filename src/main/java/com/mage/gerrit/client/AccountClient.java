@@ -558,6 +558,7 @@ public class AccountClient implements AccountApi {
 
         return null;
 
+
     }
 
     /**
@@ -587,6 +588,32 @@ public class AccountClient implements AccountApi {
 
         return null;
 
+    }
+
+    /**
+     * Get Star Labels From Change
+     * 'GET /accounts/{account-id}/stars.changes/{change-id}'
+     * <p>
+     * Get star labels from a change.
+     * <p>
+     * Request
+     * GET /a/accounts/self/stars.changes/myProject~master~I8473b95934b5732ac55d26311a706c9c2bde9940 HTTP/1.0
+     * As response the star labels that the user applied on the change are returned.
+     * The labels are lexicographically sorted.
+     */
+    public List<String> getStarLabels(String id, String changeId) {
+        id = StringUtils.isEmpty(id) ? "self" : id;
+
+        try {
+            String endpoint = joinPath(ROOT_ENDPOINT, id);
+            endpoint = joinPath(endpoint, "stars.changes");
+            endpoint = joinPath(endpoint, changeId);
+            return client.getList(endpoint);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     /**

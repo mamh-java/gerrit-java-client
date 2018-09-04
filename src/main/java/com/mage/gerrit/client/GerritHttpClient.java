@@ -7,7 +7,6 @@ import com.mage.gerrit.model.BaseModel;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -80,8 +79,8 @@ public class GerritHttpClient extends AbstractGerritHttpClient implements Gerrit
         byte[] bytes = getResponseBytes(response);
         JavaType javaType = mapper.getTypeFactory().constructParametricType(listCls, elementCls);
         return mapper.readValue(bytes, javaType);
-
     }
+
 
     /**
      * 获取为一个map对象
@@ -123,11 +122,19 @@ public class GerritHttpClient extends AbstractGerritHttpClient implements Gerrit
         return mapper.readValue(bytes, cls);
     }
 
+
     @Override
     public String get(String path) throws IOException {
         HttpResponse response = request(path, HttpGet.METHOD_NAME, null);
         byte[] bytes = getResponseBytes(response);
         return mapper.readValue(bytes, String.class);
+    }
+
+    List<String> getList(String path) throws IOException {
+        HttpResponse response = request(path, HttpGet.METHOD_NAME, null);
+        byte[] bytes = getResponseBytes(response);
+        JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, String.class);
+        return mapper.readValue(bytes, javaType);
     }
 
     @Override

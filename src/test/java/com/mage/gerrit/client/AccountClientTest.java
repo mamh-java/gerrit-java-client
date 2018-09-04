@@ -1,6 +1,19 @@
 package com.mage.gerrit.client;
 
-import com.mage.gerrit.model.*;
+import com.mage.gerrit.model.AccountExternalIdInfo;
+import com.mage.gerrit.model.AccountInfo;
+import com.mage.gerrit.model.AccountNameInput;
+import com.mage.gerrit.model.CapabilityInfo;
+import com.mage.gerrit.model.ChangeInfo;
+import com.mage.gerrit.model.DiffPreferencesInfo;
+import com.mage.gerrit.model.EditPreferencesInfo;
+import com.mage.gerrit.model.EmailInfo;
+import com.mage.gerrit.model.GroupInfo;
+import com.mage.gerrit.model.ListAccountsOption;
+import com.mage.gerrit.model.PreferencesInfo;
+import com.mage.gerrit.model.ProjectWatchInfo;
+import com.mage.gerrit.model.QueueType;
+import com.mage.gerrit.model.SshKeyInfo;
 import com.mage.gerrit.server.GerritServer;
 
 import org.junit.Before;
@@ -291,5 +304,13 @@ public class AccountClientTest {
     public void testGetStarsChanges() {
         List<ChangeInfo> l = server.getAccount().getStarsChanges("");
         pprint(l);
+    }
+
+    @Test
+    public void testGetStarLabels() {
+        List<ChangeInfo> l = server.getAccount().getStarsChanges("");
+        String changeId = l.get(0).getId();
+        List<String> list = server.getAccount().getStarLabels("", changeId);
+        assertEquals("star",list.get(0));
     }
 }
