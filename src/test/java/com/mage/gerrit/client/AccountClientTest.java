@@ -272,12 +272,24 @@ public class AccountClientTest {
     }
 
     @Test
-    public void getExternal() {
+    public void testGetExternal() {
         List<AccountExternalIdInfo> external = server.getAccount().getExternal("");
         assertEquals("gerrit:bright.ma", external.get(0).getIdentity());
 
         external = server.getAccount().getExternal("jenkins");
         assertEquals("mailto:jenkins@zeusis.com", external.get(0).getIdentity());
 
+    }
+
+    @Test
+    public void testGetStarredChanges() {
+        List<ChangeInfo> l = server.getAccount().getStarredChanges("");
+        pprint(l);
+    }
+
+    @Test
+    public void testGetStarsChanges() {
+        List<ChangeInfo> l = server.getAccount().getStarsChanges("");
+        pprint(l);
     }
 }

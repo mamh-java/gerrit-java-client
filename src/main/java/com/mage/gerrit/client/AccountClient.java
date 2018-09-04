@@ -1,7 +1,22 @@
 package com.mage.gerrit.client;
 
 import com.mage.gerrit.api.AccountApi;
-import com.mage.gerrit.model.*;
+import com.mage.gerrit.model.AccountDetailInfo;
+import com.mage.gerrit.model.AccountExternalIdInfo;
+import com.mage.gerrit.model.AccountInfo;
+import com.mage.gerrit.model.AccountNameInput;
+import com.mage.gerrit.model.CapabilityInfo;
+import com.mage.gerrit.model.ChangeInfo;
+import com.mage.gerrit.model.DiffPreferencesInfo;
+import com.mage.gerrit.model.EditPreferencesInfo;
+import com.mage.gerrit.model.EmailInfo;
+import com.mage.gerrit.model.GpgKeyInfo;
+import com.mage.gerrit.model.GroupInfo;
+import com.mage.gerrit.model.ListAccountsOption;
+import com.mage.gerrit.model.PreferencesInfo;
+import com.mage.gerrit.model.ProjectWatchInfo;
+import com.mage.gerrit.model.SshKeyInfo;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -511,6 +526,61 @@ public class AccountClient implements AccountApi {
             String endpoint = joinPath(ROOT_ENDPOINT, id);
             endpoint = joinPath(endpoint, "external.ids");
             return client.get(endpoint, AccountExternalIdInfo.class, List.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+
+    }
+
+    /**
+     * Get Changes With Default Star
+     * 'GET /accounts/{account-id}/starred.changes'
+     * <p>
+     * Gets the changes that were starred with the default star by the identified user account.
+     * This URL endpoint is functionally identical to the changes query
+     * GET /changes/?q=is:starred. The result is a list of ChangeInfo entities.
+     * <p>
+     * Request
+     * GET /a/accounts/self/starred.changes
+     */
+    public List<ChangeInfo> getStarredChanges(String id) {
+        id = StringUtils.isEmpty(id) ? "self" : id;
+
+        try {
+            String endpoint = joinPath(ROOT_ENDPOINT, id);
+            endpoint = joinPath(endpoint, "starred.changes");
+            return client.get(endpoint, ChangeInfo.class, List.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+
+    }
+
+    /**
+     * Get Starred Changes
+     * 'GET /accounts/{account-id}/stars.changes'
+     * <p>
+     * Gets the changes that were starred with any label by the identified user account.
+     * This URL endpoint is functionally identical to the changes query GET /changes/?q=has:stars.
+     * The result is a list of ChangeInfo entities.
+     * <p>
+     * Request
+     * GET /a/accounts/self/stars.changes
+     *
+     * @param id
+     * @return
+     */
+    public List<ChangeInfo> getStarsChanges(String id) {
+        id = StringUtils.isEmpty(id) ? "self" : id;
+
+        try {
+            String endpoint = joinPath(ROOT_ENDPOINT, id);
+            endpoint = joinPath(endpoint, "stars.changes");
+            return client.get(endpoint, ChangeInfo.class, List.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
