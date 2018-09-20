@@ -1,12 +1,13 @@
 package com.mage.gerrit.server;
 
 import com.mage.gerrit.api.AccountApi;
+import com.mage.gerrit.api.PluginApi;
 import com.mage.gerrit.client.AccountClient;
 import com.mage.gerrit.client.GerritHttpClient;
+import com.mage.gerrit.client.PluginClient;
 import com.mage.gerrit.model.DocResult;
 import com.mage.gerrit.model.ProjectAccessInfo;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
@@ -18,6 +19,7 @@ import static com.mage.gerrit.utils.UrlUtils.joinParam;
 import static com.mage.gerrit.utils.UrlUtils.joinPath;
 
 public class GerritServer {
+    private PluginApi plugin;
     private GerritHttpClient client;
     private AccountApi account;
 
@@ -27,6 +29,7 @@ public class GerritServer {
         String password = netRC.getEntry(serverUri.getHost()).password;
         this.client = new GerritHttpClient(serverUri, username, password);
         this.account = new AccountClient(client);
+        this.plugin = new PluginClient(client);
     }
 
     public GerritServer(URI serverUri, String username, String password) {
@@ -56,6 +59,15 @@ public class GerritServer {
 
     public void setAccount(AccountApi account) {
         this.account = account;
+    }
+
+
+    public PluginApi getPlugin() {
+        return plugin;
+    }
+
+    public void setPlugin(PluginApi plugin) {
+        this.plugin = plugin;
     }
 
     public Map<String, ProjectAccessInfo> listAccess(List<String> projects) {
