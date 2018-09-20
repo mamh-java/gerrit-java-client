@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -218,4 +219,19 @@ public class GerritHttpClient extends AbstractGerritHttpClient implements Gerrit
             e.printStackTrace();
         }
     }
+
+    public <E extends BaseModel>
+    E post(String path, Class<E> cls) {
+        try {
+            HttpResponse response = request(path, HttpPost.METHOD_NAME, null);
+            byte[] raw = getResponseBytes(response);
+            if (raw != null) {
+                return mapper.readValue(raw, cls);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }
